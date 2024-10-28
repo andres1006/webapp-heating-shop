@@ -1,8 +1,7 @@
 
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { authConfig } from "./auth.config";
-import { z } from "zod";
+import { authConfig } from "./_auth.config";
 
 type User = {
   id: string;
@@ -47,8 +46,7 @@ export const { auth, signIn, signOut } = NextAuth({
     }),
   ],
   pages: {
-    signIn: '/login',
-    error: '/error', // Página de error personalizada
+    signIn: '/',
   },
   session: {
     strategy: 'jwt',
@@ -66,27 +64,6 @@ export const { auth, signIn, signOut } = NextAuth({
       return session
     },
     async authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      console.log('authorized', isLoggedIn)
-      const privateRoute =
-        nextUrl.pathname.startsWith("/dashboard") ||
-        nextUrl.pathname.startsWith("/cuenta");
-
-      if (nextUrl.pathname.startsWith("/dashboard/agencia-naviera")) {
-        return true;
-      }
-
-      if (privateRoute) {
-        if (isLoggedIn) {
-          /*           const session = authValidate().then((session) => {
-                      console.log(session)
-                    }); */
-          return true;
-        }
-        return false;
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL("/dashboard", nextUrl));
-      }
       return true;
     },
   }

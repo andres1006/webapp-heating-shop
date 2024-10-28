@@ -1,14 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  redirects: async () => {
+/*   redirects: async () => {
     return [
       {
         source: "/",
-        destination: "/login",
+        destination: "/",
         permanent: true,
       },
     ];
-  },
+  }, */
 };
 
 export default nextConfig;

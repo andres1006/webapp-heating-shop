@@ -1,3 +1,4 @@
+import Carousel from '@/components/carrusel'
 import SidebarWrapper from '@/components/SidebarWrapper'
 import React, { ReactNode } from 'react'
 
@@ -8,7 +9,10 @@ type Props = {
 const Dashboard: React.FC<Props> = ({ children }) => {
   return (
     <div className='flex h-screen bg-background'>
-      <SidebarWrapper>{children}</SidebarWrapper>
+      <SidebarWrapper>
+        <Carousel />
+        {children}
+      </SidebarWrapper>
     </div>
   )
 }
