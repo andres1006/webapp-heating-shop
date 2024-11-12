@@ -1,9 +1,10 @@
 'use client'
+import Image from 'next/image';
 import { useState } from 'react';
 
 // Imágenes de ejemplo, puedes reemplazarlas con tus imágenes reales.
 const images = [
-  'https://i.blogs.es/37b42d/aire-acondicionado-portatil/1366_2000.webp',
+  '/assets/img-1.png',
   'https://i.blogs.es/37b42d/aire-acondicionado-portatil/1366_2000.webp',
   'https://i.blogs.es/37b42d/aire-acondicionado-portatil/1366_2000.webp',
 ];
@@ -26,19 +27,19 @@ const Carousel = () => {
   };
 
   return (
-    <div className="relative w-full mx-auto overflow-hidden">
+    <div className="relative w-full mx-auto overflow-hidden ">
       <div className="flex transition-transform duration-500 ease-out" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
         {images.map((image, index) => (
-          <div key={index} className="min-w-full h-full bg-center max-h-[800px] min-h-[500px] bg-gray-500">
-            {/* <img src={image} alt={`Slide ${index}`} className="w-full h-full max-h-[500px] min-h-[200px] object-cover nset-0 bg-black opacity-50" /> */}
+          <div key={index} className="min-w-full h-full bg-center max-h-[600px] bg-gray-100">
+            <img src={image} alt={`Slide ${index}`} className="w-full h-full object-cover nset-0 bg-black opacity-60" />
           </div>
         ))}
       </div>
       <div className='w-full absolute  top-1/2 transform -translate-y-1/2 '>
         <div className="text-center px-4 md:px-0 fade-in-up">
           <h1 className="text-4xl md:text-6xl font-bold text-white text-shadow">Confort y Frescura en un Par de Clicks</h1>
-          <p className="text-lg text-gray-100 mt-4" text-shadow>En unos minutos y desde la comodidad de tu hogar, disfruta de un ambiente fresco con el mejor servicio. Nosotros nos encargamos de todo</p>
-          <a href='/configurador' className="mt-8 inline-block bg-blue-600 text-white px-6 py-3 rounded-full shadow hover:bg-blue-700">
+          <p className="text-lg text-gray-100 mt-4">En unos minutos y desde la comodidad de tu hogar, disfruta de un ambiente fresco con el mejor servicio. Nosotros nos encargamos de todo</p>
+          <a href='/configurador' className="hidden  mt-8 md:inline-block bg-blue-200 text-white px-6 py-3 rounded-full shadow hover:bg-blue-400">
             Configura el tuyo
           </a>
         </div>
@@ -47,7 +48,7 @@ const Carousel = () => {
       {/* Botón anterior */}
       <button
         onClick={prevSlide}
-        className="absolute left-5 top-1/2 transform -translate-y-1/2 bg-transparent text-white p-2 rounded-full hover:bg-gray-200"
+        className="absolute left-5 top-1/2 transform -translate-y-1/2 bg-transparent text-white p-2 rounded-full hover:bg-transparen"
       >
         ‹
       </button>
@@ -55,7 +56,7 @@ const Carousel = () => {
       {/* Botón siguiente */}
       <button
         onClick={nextSlide}
-        className="absolute right-5 top-1/2 transform -translate-y-1/2 bg-transparent text-white p-2 rounded-full hover:bg-gray-200"
+        className="absolute right-5 top-1/2 transform -translate-y-1/2 bg-transparent text-white p-2 rounded-full hover:bg-transparen"
       >
         ›
       </button>

@@ -11,7 +11,6 @@ const Page = () => {
       <section className='w-full flex-1 overflow-auto'>
         <HomePage />
       </section>
-      <Footer />
     </div>
   )
 }

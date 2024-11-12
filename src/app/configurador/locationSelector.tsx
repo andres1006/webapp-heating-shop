@@ -1,45 +1,29 @@
-
-import { FC, useState } from 'react';
+import Select from '@/components/organisms/select'
+import { FC, useState } from 'react'
 
 interface LocationSelectorProps {
-  onValidLocation: () => void;
+  onValidLocation: (colonia: string) => void
+  value: string
 }
 
-const VALID_ZIP_CODES = ['10001', '10002', '10003']; // Ejemplo de códigos postales válidos
+const COLONIAS = ['Cuahutemoc', 'Benito Juarez)'] // Ejemplo de nombres de colonias
 
-const LocationSelector: FC<LocationSelectorProps> = ({ onValidLocation }) => {
-  const [zipCode, setZipCode] = useState('');
-  const [isValid, setIsValid] = useState<boolean | null>(null);
-
-  const handleValidate = () => {
-    if (VALID_ZIP_CODES.includes(zipCode)) {
-      setIsValid(true);
-      onValidLocation();
-    } else {
-      setIsValid(false);
-    }
-  };
-
+const LocationSelector: FC<LocationSelectorProps> = ({ onValidLocation, value }) => {
   return (
-    <div className="mb-8">
-      <h2 className="text-xl font-semibold mb-4">Verifica tu Código Postal</h2>
-      <input
-        type="text"
-        placeholder="Ingresa tu código postal"
-        value={zipCode}
-        onChange={(e) => setZipCode(e.target.value)}
-        className="border border-gray-300 rounded px-4 py-2 mb-4 w-full"
+    <div className="mb-8 w-full">
+      <h2 className="text-xl font-semibold mb-4">Selecciona tu Colonia</h2>
+      <p className="text-sm text-gray-500 mb-4">
+        Ingresa el nombre de tu colonia para continuar con el proceso de configuración.
+      </p>
+      <Select
+        value={value}
+        onChange={(e) => onValidLocation(e)}
+        options={COLONIAS.map((colonia) => ({ value: colonia, label: colonia }))}
+        placeholder="Selecciona tu colonia"
+        className="bg-white rounded-2xl border-none px-6 py-4 w-full "
       />
-      <button
-        onClick={handleValidate}
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Validar Ubicación
-      </button>
-      {isValid === false && <p className="text-red-500 mt-2">Ubicación no válida</p>}
-      {isValid === true && <p className="text-green-500 mt-2">Ubicación válida</p>}
     </div>
-  );
-};
+  )
+}
 
-export default LocationSelector;
+export default LocationSelector
