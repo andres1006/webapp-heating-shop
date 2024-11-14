@@ -5,20 +5,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 type PaymentTypeSelectorProps = {
   onPaymentTypeSelect: (paymentType: string) => void
+  selectedType: string | null
 }
 
-const PaymentTypeSelector = ({ onPaymentTypeSelect }: PaymentTypeSelectorProps) => {
-  const [selectedPaymentType, setSelectedPaymentType] = useState<string | null>(null)
-
+const PaymentTypeSelector = ({ onPaymentTypeSelect, selectedType }: PaymentTypeSelectorProps) => {
   const handleSelect = (paymentType: string) => {
-    setSelectedPaymentType(paymentType)
+    console.log(paymentType)
     onPaymentTypeSelect(paymentType)
   }
 
   return (
     <div className="mb-8">
       <h2 className="text-xl font-semibold mb-4">Selecciona el Tipo de Pago</h2>
-      <Tabs defaultValue="account" className="w-[400px]">
+      <Tabs defaultValue={selectedType || ''} className="w-[400px]">
         <TabsList>
           <TabsTrigger value="contado" onClick={() => handleSelect('contado')}>
             Contado

@@ -38,7 +38,7 @@ const Summary: FC<SummaryProps> = ({ colonia, windowSize, windowType, paymentTyp
           disabled={!windowSize || !windowType || !paymentType || !colonia}
           className="w-full px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
         >
-          Proceder a la Compra
+          Ir a pagar
         </Button>
       </Link>
       {paymentType === 'financiacion' && <Separator />}

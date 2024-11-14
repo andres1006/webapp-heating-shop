@@ -38,7 +38,7 @@ const Header = () => {
       >
         <div className="flex items-center justify-between w-full">
           <Link href="/">
-            <img src="/assets/logo-1.png" alt="Logo" width={100} height={100} />
+            <img src="/assets/logo-horizontal.png" alt="Logo" width={70} height={40} />
           </Link>
 
           <div className="hidden md:flex md:space-x-8">
@@ -87,7 +87,7 @@ const Header = () => {
 
             <div className="fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50 transform transition-transform duration-300">
               <div className="flex items-center justify-between p-4 border-b">
-                <img src="/assets/logo-1.png" alt="Logo" width={100} height={100} />
+                <img src="/assets/logo-horizontal.png" alt="Logo" width={100} height={100} />
                 <button
                   onClick={closeSidebar}
                   className="text-gray-600 hover:text-gray-800 focus:outline-none"
