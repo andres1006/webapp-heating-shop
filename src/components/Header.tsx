@@ -38,7 +38,7 @@ const Header = () => {
       >
         <div className="flex items-center justify-between w-full">
           <Link href="/">
-            <img src="/assets/logo-horizontal.png" alt="Logo" width={70} height={40} />
+            <img src="/assets/logo-horizontal.png" alt="Logo" width={70} height={40} className="hidden md:block" />
           </Link>
 
           <div className="hidden md:flex md:space-x-8">

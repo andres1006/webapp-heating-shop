@@ -1,13 +1,8 @@
 'use client'
-import Image from 'next/image'
 import { useState } from 'react'
 
 // Imágenes de ejemplo, puedes reemplazarlas con tus imágenes reales.
-const images = [
-  '/assets/img-1.png',
-  'https://i.blogs.es/37b42d/aire-acondicionado-portatil/1366_2000.webp',
-  'https://i.blogs.es/37b42d/aire-acondicionado-portatil/1366_2000.webp'
-]
+const images = ['/assets/img-1.png', '/assets/img-1.png', '/assets/img-1.png']
 
 const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -29,12 +24,8 @@ const Carousel = () => {
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {images.map((image, index) => (
-          <div key={index} className="min-w-full h-full bg-center max-h-[600px] bg-blue-400">
-            <img
-              src={image}
-              alt={`Slide ${index}`}
-              className="w-full h-full object-cover nset-0 bg-black opacity-6p..-{ññ0"
-            />
+          <div key={index} className="min-w-full h-full bg-center max-h-[600px] bg-blue-200">
+            <img src={image} alt={`Slide ${index}`} className="w-full h-full object-cover  bg-blue-200 opacity-80" />
           </div>
         ))}
       </div>
