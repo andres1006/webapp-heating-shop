@@ -40,10 +40,10 @@ const Carousel = () => {
       </div>
       <div className="w-full absolute  top-1/2 transform -translate-y-1/2 ">
         <div className="text-center px-4 md:px-0 fade-in-up">
-          <h1 className="text-4xl md:text-6xl font-bold text-white text-shadow">
+          <h1 className="text-xl mt-6 md:mt-0 md:text-6xl font-bold text-white text-shadow">
             Confort y Frescura en un Par de Clicks
           </h1>
-          <p className="text-lg text-gray-100 mt-4">
+          <p className="text-md md:text-lg text-gray-100 mt-4">
             En unos minutos y desde la comodidad de tu hogar, disfruta de un ambiente fresco con el mejor servicio.
             Nosotros nos encargamos de todo
           </p>

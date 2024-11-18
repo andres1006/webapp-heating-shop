@@ -33,7 +33,7 @@ const Header = () => {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 flex justify-between items-center h-16 px-4 md:px-6 transition-colors duration-100 ${
-          isScrolled ? 'bg-white shadow-lg border-b-2' : 'bg-transparent'
+          isScrolled ? 'bg-blue-300 shadow-lg border-b-2' : 'bg-transparent'
         }`}
       >
         <div className="flex items-center justify-between w-full">
@@ -46,7 +46,7 @@ const Header = () => {
               <Link key={href} href={href}>
                 <p
                   className={`inline-flex items-center px-1 pt-1 text-lg font-medium ${
-                    isScrolled ? 'text-gray-900 hover:text-gray-600' : 'text-blue-400 hover:text-gray-300'
+                    isScrolled ? 'text-gray-100 hover:text-gray-200' : 'text-blue-400 hover:text-gray-300'
                   }`}
                 >
                   {label}
@@ -56,7 +56,7 @@ const Header = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/checkout">
+            {/*             <Link href="/checkout">
               <p
                 className={`flex items-center ${
                   isScrolled ? 'text-gray-600 hover:text-gray-900' : 'text-blue-200 hover:text-gray-300'
@@ -64,9 +64,9 @@ const Header = () => {
               >
                 <ShoppingCartIcon className="h-6 w-6" />
               </p>
-            </Link>
+            </Link> */}
             <Link href="/configurador">
-              <p className="px-4 py-2 rounded-md bg-blue-300 text-white hover:bg-blue-400">Comprar</p>
+              <p className="px-4 py-2 rounded-md bg-blue-300 text-white hover:bg-blue-400">Contratar</p>
             </Link>
           </div>
 
@@ -105,17 +105,17 @@ const Header = () => {
                   </Link>
                 ))}
                 <div className="border-t my-2"></div>
-                <Link href="/checkout">
+                {/*              <Link href="/checkout">
                   <p onClick={closeSidebar} className="flex items-center px-4 py-2 text-lg font-medium text-gray-700">
                     <ShoppingCartIcon className="h-6 w-6 mr-2" />
                   </p>
-                </Link>
+                </Link> */}
                 <Link href="/configurador">
                   <p
                     onClick={closeSidebar}
                     className="block mx-4 px-4 py-2 text-lg font-medium rounded-md text-center bg-blue-300 text-white hover:bg-blue-400"
                   >
-                    Comprar
+                    Contrata
                   </p>
                 </Link>
               </nav>
