@@ -15,9 +15,9 @@ const PaymentTypeSelector = ({ onPaymentTypeSelect, selectedType }: PaymentTypeS
   }
 
   return (
-    <div className="mb-8">
+    <div className="mb-8 w-full">
       <h2 className="text-xl font-semibold mb-4">Selecciona el Tipo de Pago</h2>
-      <Tabs defaultValue={selectedType || ''} className="w-[400px]">
+      <Tabs defaultValue={selectedType || ''}>
         <TabsList>
           <TabsTrigger value="contado" onClick={() => handleSelect('contado')}>
             Contado

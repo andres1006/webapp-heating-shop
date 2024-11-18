@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react'
 import Select from '../organisms/select'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa'
+import { Label } from '../ui/label'
 
 type FinancingSimulatorProps = {
   onSimulationComplete?: (monthlyPayment: number) => void
+  showHide?: boolean
 }
 
-const FinancingSimulator = ({ onSimulationComplete }: FinancingSimulatorProps) => {
+const FinancingSimulator = ({ onSimulationComplete, showHide = false }: FinancingSimulatorProps) => {
   const [amount, setAmount] = useState<number>(0)
   const [term, setTerm] = useState<number>(12) // Default to 12 months
   const [monthlyPayment, setMonthlyPayment] = useState<number | null>(null)
-  const [show, setShow] = useState<boolean>(false)
+  const [show, setShow] = useState<boolean>(!showHide || true)
 
   const calculateMonthlyPayment = () => {
     const interestRate = 0.05 // Example interest rate of 5%
@@ -27,13 +30,16 @@ const FinancingSimulator = ({ onSimulationComplete }: FinancingSimulatorProps) =
 
   return (
     <div>
-      <Button className="w-full" onClick={() => setShow(!show)}>
-        {show ? 'Ocultar financiamiento' : 'Simular financiamiento'}
-      </Button>
+      {!showHide && (
+        <Button className="w-full" onClick={() => setShow(!show)}>
+          {show ? 'Ocultar financiamiento' : 'Simular financiamiento'}
+          <div className="ml-3">{show ? <FaChevronUp /> : <FaChevronDown />}</div>
+        </Button>
+      )}
       {show && (
         <>
           <div className="my-4">
-            <label className="block mb-2">Monto del Préstamo</label>
+            <Label className="block mb-2">Monto del Préstamo</Label>
             <Input
               type="number"
               placeholder="Monto del Préstamo"
@@ -43,7 +49,7 @@ const FinancingSimulator = ({ onSimulationComplete }: FinancingSimulatorProps) =
             />
           </div>
           <div className="mb-4">
-            <label className="block mb-2">Plazo (meses)</label>
+            <Label className="block mb-2">Plazo (meses)</Label>
             <Select
               value={String(term || '')}
               placeholder="Selecciona un plazo"
@@ -51,7 +57,7 @@ const FinancingSimulator = ({ onSimulationComplete }: FinancingSimulatorProps) =
               options={[6, 12, 24, 36].map((option) => ({ value: String(option), label: `${option} meses` }))}
             />
           </div>
-          {monthlyPayment !== null && (
+          {monthlyPayment !== null && amount > 0 && (
             <p className="mt-4 text-green-600 font-semibold text-lg">Cuota Mensual: ${monthlyPayment.toFixed(2)}</p>
           )}
         </>

@@ -10,7 +10,7 @@ type SearchParams = {
 
 const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
   return (
-    <section className="w-full h-full flex flex-col items-center bg-gradient-to-b from-blue-50/55 to-transparent mx-auto pt-20 px-[20%] transition-all duration-300">
+    <section className="w-full h-full flex flex-col items-center bg-gradient-to-b from-blue-50/55 to-transparent mx-auto pt-20 md:px-[20%] transition-all duration-300">
       <ConfiguratorPage
         colonia={searchParams?.colonia || ''}
         windowType={searchParams?.windowType || ''}

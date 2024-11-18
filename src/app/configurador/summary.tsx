@@ -19,9 +19,9 @@ const Summary: FC<SummaryProps> = ({ colonia, windowSize, windowType, paymentTyp
     paymentType: paymentType || ''
   })
   return (
-    <div className="p-6 rounded-lg bg-gray-50 flex flex-col gap-4">
-      <h2 className="text-xl font-semibold mb-4">Resumen de Configuración</h2>
-      <div>
+    <div className="flex p-4 flex-col py-3 w-full md:flex-1 rounded-lg bg-gray-50 gap-4">
+      <h2 className="text-xl font-semibold mb-4 text-center">Resumen de Configuración</h2>
+      <>
         <p className="text-sm capitalize gap-2 flex items-center">
           <strong className="lowercase first-letter:capitalize">Tamaño de la ventana:</strong>
           {windowSize || 'No seleccionado'}
@@ -30,7 +30,7 @@ const Summary: FC<SummaryProps> = ({ colonia, windowSize, windowType, paymentTyp
           <strong className="lowercase first-letter:capitalize">Tipo de apertura:</strong>
           {windowType || 'No seleccionado'}
         </p>
-      </div>
+      </>
       <Separator />
       {/* Validación para habilitar el botón solo si ambas opciones están seleccionadas */}
       <Link href={`/checkout?${params.toString()}`}>

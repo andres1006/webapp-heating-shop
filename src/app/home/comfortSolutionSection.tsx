@@ -3,8 +3,8 @@ import Image from 'next/image'
 const ComfortSolutionSection = () => (
   <section className="flex flex-col md:flex-row items-center justify-between py-16 px-10 bg-blue-50/30 text-blue-400">
     <div className="md:w-1/2 text-center md:text-left space-y-4">
-      <h2 className="text-3xl md:text-4xl font-bold mb-4">Fresco en Cualquier Espacio, Sin Complicaciones</h2>
-      <p className="text-lg">
+      <h2 className="text-2xl md:text-4xl font-bold mb-4">Fresco en Cualquier Espacio, Sin Complicaciones</h2>
+      <p className="text-md md:text-lg">
         Ofrecemos un servicio único en México, que consta de la instalación de un aire acondicionado portátil con
         mantenimiento incluido. Solo necesitas unos minutos para realizar tu compra, y nosotros nos encargamos del
         resto: instalación sin estrés y un mantenimiento cada 6 meses para que solo te preocupes por disfrutar.

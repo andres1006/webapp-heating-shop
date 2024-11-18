@@ -30,12 +30,11 @@ const types = [
 ]
 
 const WindowTypeSelector: FC<WindowTypeSelectorProps> = ({ selectedType, onSelect }) => {
-  console.log(selectedType)
   return (
-    <div className="mb-8 w-full">
+    <div className="mb-8 w-full ">
       <h2 className="text-xl font-semibold mb-4">Selecciona el Tipo de Apertura</h2>
       <p className="text-sm  mb-4">Selecciona el tipo de apertura que deseas para tu ventana.</p>
-      <div className="flex gap-4">
+      <div className="flex gap-4  overflow-auto">
         {types.map((type) => (
           <ImageHoverButton
             image={type.image}

@@ -37,27 +37,27 @@ export default function ConfiguratorPage({ colonia, windowSize, windowType, paym
       windowSize: newWindowSize || '',
       paymentType: newPaymentType || ''
     })
-    router.push(`/configurador?${params.toString()}`)
+    router.replace(`/configurador?${params.toString()}`, { scroll: false })
   }
 
   return (
     <>
       {!colonia && (
-        <div className="container flex flex-col items-center py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 z-10 relative">
+        <div className="container flex flex-col items-center pt-8 px-4 md:px-0 mx-auto max-w-screen-xl text-center lg:pt-16 z-10 relative">
           <Link
             href="#"
             className="inline-flex justify-between items-center py-1 px-1 pe-4 mb-7 text-sm text-blue-700 bg-gray-100 rounded-full dark:bg-blue-900 dark:text-blue-300 hover:bg-gray-200 dark:hover:bg-gray-200"
           >
             <span className="text-xs bg-blue-600 rounded-full text-white px-4 py-1.5 me-3">Nuevo</span>{' '}
-            <span className="text-sm font-medium">¡Comienza a configurar tu confort ahora!</span>
+            <span className="text-xs md:text-sm font-medium">¡Comienza a configurar tu confort ahora!</span>
           </Link>
-          <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+          <h1 className="mb-4 text-2xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
             Tu comodidad es nuestra prioridad
           </h1>
-          <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-200">
+          <p className="mb-8 text-md md:text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-200">
             En Freddo, te ayudamos a crear un ambiente fresco y cómodo en minutos.
           </p>
-          <div className="w-1/2">
+          <div className="w-full md:w-1/2">
             {/* Selector de Ubicación */}
             <LocationSelector
               onValidLocation={(colonia: string) => {
@@ -87,7 +87,7 @@ export default function ConfiguratorPage({ colonia, windowSize, windowType, paym
           </p>
         </div>
       )}
-      <div className="flex flex-wrap gap-4 w-full">
+      <div className="flex px-4 md:px-0 flex-wrap gap-4 w-full overflow-auto">
         <ScrollArea className="">
           {colonia && (
             <LocationSelector
@@ -122,11 +122,9 @@ export default function ConfiguratorPage({ colonia, windowSize, windowType, paym
             />
           )}
         </ScrollArea>
-        <div>
-          {windowSize && windowType && (
-            <Summary colonia={colonia} windowSize={windowSize} windowType={windowType} paymentType={paymentType} />
-          )}
-        </div>
+        {windowSize && windowType && (
+          <Summary colonia={colonia} windowSize={windowSize} windowType={windowType} paymentType={paymentType} />
+        )}
       </div>
     </>
   )
