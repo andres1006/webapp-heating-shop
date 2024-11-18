@@ -32,7 +32,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 flex justify-between items-center h-16 px-4 md:px-6 transition-colors duration-100 ${
+        className={`fixed top-0 left-0 right-0 z-50 flex justify-between border-none items-center h-16 px-4 md:px-6 transition-colors duration-100 ${
           isScrolled ? 'bg-blue-300 shadow-lg border-b-2' : 'bg-transparent'
         }`}
       >
