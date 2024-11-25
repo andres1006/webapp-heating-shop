@@ -7,34 +7,22 @@ import { MdClose } from 'react-icons/md'
 
 const navLinks = [
   { href: '/', label: 'Inicio' },
-  { href: '/service', label: 'Servicios' },
-  { href: '/financiamiento', label: 'Financiamiento' }
+  //{ href: '/service', label: 'Servicios' },
+  // { href: '/financiamiento', label: 'Financiamiento' },
+  { href: '/contact', label: 'Contacto' },
+  { href: '/faq', label: 'Preguntas frecuentes' }
 ]
 
 const Header = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
 
   const openSidebar = () => setIsSidebarOpen(true)
   const closeSidebar = () => setIsSidebarOpen(false)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
-
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 flex justify-between border-none items-center h-16 px-4 md:px-6 transition-colors duration-100 ${
-          isScrolled ? 'bg-blue-300 shadow-lg border-b-2' : 'bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 flex justify-between border-none items-center h-16 px-4 md:px-6 transition-colors duration-100 bg-blue-300 shadow-lg border-b-2`}
       >
         <div className="flex items-center justify-between w-full">
           <Link href="/">
@@ -45,9 +33,7 @@ const Header = () => {
             {navLinks.map(({ href, label }) => (
               <Link key={href} href={href}>
                 <p
-                  className={`inline-flex items-center px-1 pt-1 text-lg font-medium ${
-                    isScrolled ? 'text-gray-100 hover:text-gray-200' : 'text-blue-400 hover:text-gray-300'
-                  }`}
+                  className={`inline-flex items-center px-1 pt-1 text-lg font-medium text-gray-100 hover:text-gray-200`}
                 >
                   {label}
                 </p>
@@ -66,7 +52,7 @@ const Header = () => {
               </p>
             </Link> */}
             <Link href="/configurador">
-              <p className="px-4 py-2 rounded-md bg-blue-300 text-white hover:bg-blue-400">Contratar</p>
+              <p className="px-4 py-2 rounded-md bg-blue-300 text-white hover:bg-blue-400">Contrata ahora</p>
             </Link>
           </div>
 
@@ -115,7 +101,7 @@ const Header = () => {
                     onClick={closeSidebar}
                     className="block mx-4 px-4 py-2 text-lg font-medium rounded-md text-center bg-blue-300 text-white hover:bg-blue-400"
                   >
-                    Contrata
+                    Contrata ahora
                   </p>
                 </Link>
               </nav>

@@ -25,24 +25,25 @@ const Carousel = () => {
       >
         {images.map((image, index) => (
           <div key={index} className="min-w-full h-full bg-center max-h-[600px] bg-blue-200">
-            <img src={image} alt={`Slide ${index}`} className="w-full h-full object-cover  bg-blue-200 opacity-80" />
+            <img src={image} alt={`Slide ${index}`} className="w-full h-full object-cover opacity-50" />
           </div>
         ))}
       </div>
-      <div className="w-full absolute  top-1/2 transform -translate-y-1/2 ">
+      <div className="w-full absolute  top-1/2 transform -translate-y-1/2 ease-out">
         <div className="text-center px-4 md:px-0 fade-in-up">
-          <h1 className="text-xl mt-6 md:mt-0 md:text-6xl font-bold text-white text-shadow">
-            Confort y Frescura en un Par de Clicks
+          <h1 className="text-md mt-6 md:mt-0 md:text-5xl font-bold text-white text-shadow">
+            <mark className="px-2 text-white bg-blue-300 rounded dark:bg-blue-200">¿Calor?</mark> ¡No mas! Con Freddo,
+            disfruta confort y frescura en un par de clicks
           </h1>
           <p className="text-md md:text-lg text-gray-100 mt-4">
-            En unos minutos y desde la comodidad de tu hogar, disfruta de un ambiente fresco con el mejor servicio.
-            Nosotros nos encargamos de todo
+            ¡El único servicio todo incluido de aire acondicionado para tu espacio! Solo contrata y nosotros nos
+            encargamos de todo.
           </p>
           <a
             href="/configurador"
-            className="hidden  mt-8 md:inline-block bg-blue-200 text-white px-6 py-3 rounded-full shadow hover:bg-blue-400"
+            className="hidden  mt-8 md:inline-block bg-blue-300 text-white px-6 py-3 rounded-full shadow hover:bg-blue-400"
           >
-            Configura el tuyo
+            Contrata ahora
           </a>
         </div>
       </div>
@@ -50,7 +51,7 @@ const Carousel = () => {
       {/* Botón anterior */}
       <button
         onClick={prevSlide}
-        className="absolute left-5 top-1/2 transform -translate-y-1/2 bg-transparent text-white p-2 rounded-full hover:bg-transparen"
+        className="ease-out absolute left-5 top-1/2 transform -translate-y-1/2 bg-transparent text-white p-2 rounded-full hover:bg-transparen"
       >
         ‹
       </button>

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import SubscriptionSummary from './orderSummary'
 import clsx from 'clsx'
 import { Button } from '@/components/ui/button'
-import { IoArrowBackSharp } from 'react-icons/io5'
+import { IoArrowBackSharp, IoLocation } from 'react-icons/io5'
 import UserForm from './userForm'
 import { useRouter } from 'next/navigation'
 import UbicationForm from './ubicationForm'
@@ -11,6 +11,9 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { formSchema } from './validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Summary from './summary'
+import { BiLogoWindows } from 'react-icons/bi'
+import { CgSize } from 'react-icons/cg'
+import { MdPayment } from 'react-icons/md'
 
 type OrderDetails = {
   colonia: string
@@ -67,22 +70,79 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
           Regresar
         </div>
       </Button>
-      <div className="flex justify-center flex-col items-center mb-6">
-        <div className="flex space-x-2">
-          {[...Array(6)].map((_, index) => (
+      <div className="flex w-full items-center justify-center px-[10%] md:px-[20%]">
+        <ol className="w-full flex  mb-4 sm:mb-5">
+          <li
+            className={clsx(
+              'flex w-full items-center',
+              currentStep > 0 &&
+                'after:w-full after:h-1 after:border-b after:border-blue-300 after:border-4 after:inline-block dark:after:border-gray-700',
+              currentStep <= 0 &&
+                'after:w-full after:h-1 after:border-b after:border-4 after:inline-block after:border-blue-200'
+            )}
+          >
             <div
-              key={index}
-              className={clsx(`w-2 h-2 rounded-full`, {
-                'bg-blue-100 w-2 h-2': index < currentStep,
-                'bg-blue-200 w-[20px]': index === currentStep,
-                'bg-gray-200 w-2 h-2': index > currentStep
-              })}
-            />
-          ))}
-        </div>
-        <p className="text-sm mt-2 ">
-          Paso {currentStep} de {totalSteps}
-        </p>
+              className={clsx(
+                'flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0',
+                currentStep === 0 && 'bg-blue-200 text-white dark:text-blue-200',
+                currentStep > 0 && 'bg-blue-400 dark:bg-blue-300 text-white',
+                currentStep < 0 && 'bg-white text-blue-300 dark:text-blue-300'
+              )}
+            >
+              <IoLocation style={{ fontSize: '1.5rem' }} />
+            </div>
+          </li>
+          <li
+            className={clsx(
+              'flex w-full items-center',
+              currentStep >= 1 &&
+                'after:w-full after:h-1 after:border-b after:border-blue-300 after:border-4 after:inline-block dark:after:border-gray-700',
+              currentStep < 1 &&
+                'after:w-full after:h-1 after:border-b after:border-4 after:inline-block after:border-blue-200'
+            )}
+          >
+            <div
+              className={clsx(
+                'flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0',
+                currentStep === 1 && 'bg-blue-200 text-white dark:text-blue-200',
+                currentStep > 1 && 'bg-blue-400 dark:bg-blue-300 text-white',
+                currentStep < 1 && 'bg-white text-blue-300 dark:text-blue-300'
+              )}
+            >
+              <BiLogoWindows style={{ fontSize: '1.5rem' }} />
+            </div>
+          </li>
+          <li
+            className={clsx(
+              'flex w-full items-center',
+              currentStep >= 2 &&
+                'after:w-full after:h-1 after:border-b after:border-blue-300 after:border-4 after:inline-block dark:after:border-gray-700',
+              currentStep < 2 &&
+                'after:w-full after:h-1 after:border-b after:border-4 after:inline-block after:border-blue-200'
+            )}
+          >
+            <div
+              className={clsx(
+                'flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0',
+                currentStep === 2 && 'bg-blue-200 text-white dark:text-blue-200',
+                currentStep > 2 && 'bg-blue-400 dark:bg-blue-300 text-white',
+                currentStep < 2 && 'bg-white text-blue-300 dark:text-blue-300'
+              )}
+            >
+              <CgSize style={{ fontSize: '1.5rem' }} />
+            </div>
+          </li>
+          <div
+            className={clsx(
+              'flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0',
+              currentStep === 3 && 'bg-blue-200 text-white dark:text-blue-200',
+              currentStep > 3 && 'bg-blue-400 dark:bg-blue-300 text-white',
+              currentStep < 3 && 'bg-white text-blue-300 dark:text-blue-300'
+            )}
+          >
+            <MdPayment style={{ fontSize: '1.5rem' }} />
+          </div>
+        </ol>
       </div>
       <div className="flex gap-2 w-full flex-wrap justify-center">
         <div className="w-auto min-w-[50%]">

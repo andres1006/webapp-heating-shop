@@ -1,9 +1,8 @@
+import Contact from '@/pages/contactPage'
 import React from 'react'
 
 const Page = () => {
-  return (
-    <div>Contacto</div>
-  )
+  return <Contact />
 }
 
 export default Page

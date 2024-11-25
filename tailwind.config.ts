@@ -52,24 +52,22 @@ const config: Config = {
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',
-				gray: {
-					//DEFAULT: 'hsl(var(--gray))',
-					//foreground: 'hsl(var(--gray-foreground))',
-					'500': '#2D3748',
-					'400': '#4A5568',
-					'300': '#9BA8B8',
-					'200': '#E7EAEF',
-					'100': '#F7F7F7',
-				},
-				blue: {
-					DEFAULT: 'hsl(var(--blue))',
-					foreground: 'hsl(var(--blue-foreground))',
-					'400': '#091123',
-					'300': '#142554',
-					'200': '#6DACD3',
-					'100': '#7499A9',
-					'50': '#D0DDE7',
-				},
+  			gray: {
+  				'100': '#F7F7F7',
+  				'200': '#E7EAEF',
+  				'300': '#9BA8B8',
+  				'400': '#4A5568',
+  				'500': '#2D3748'
+  			},
+  			blue: {
+  				'50': '#D0DDE7',
+  				'100': '#7499A9',
+  				'200': '#6DACD3',
+  				'300': '#142554',
+  				'400': '#091123',
+  				DEFAULT: 'hsl(var(--blue))',
+  				foreground: 'hsl(var(--blue-foreground))'
+  			},
   			chart: {
   				'1': 'hsl(var(--chart-1))',
   				'2': 'hsl(var(--chart-2))',
@@ -77,6 +75,28 @@ const config: Config = {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			}
+  		},
+  		keyframes: {
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
+  			}
+  		},
+  		animation: {
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out'
   		}
   	}
   },

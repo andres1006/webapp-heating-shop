@@ -32,9 +32,12 @@ const types = [
 const WindowTypeSelector: FC<WindowTypeSelectorProps> = ({ selectedType, onSelect }) => {
   return (
     <div className="mb-8 w-full ">
-      <h2 className="text-xl font-semibold mb-4">Selecciona el Tipo de Apertura</h2>
-      <p className="text-sm  mb-4">Selecciona el tipo de apertura que deseas para tu ventana.</p>
-      <div className="flex gap-4  overflow-auto">
+      <h2 className="text-xl font-semibold mb-4 text-center">Selecciona el tipo de ventana</h2>
+      <p className="text-sm  mb-4 text-center ">
+        Instalaremos el equipo cerca de una ventana ya que este expulsa aire caliente que tiene ser expulsado a través
+        de una ventana.
+      </p>
+      <div className="flex gap-2 overflow-auto p-2 justify-center" style={{ scrollbarWidth: 'none' }}>
         {types.map((type) => (
           <ImageHoverButton
             image={type.image}

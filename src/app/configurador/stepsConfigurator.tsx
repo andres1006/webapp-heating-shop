@@ -9,6 +9,10 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
 import Summary from './summary'
+import { IoLocation } from 'react-icons/io5'
+import { BiLogoWindows } from 'react-icons/bi'
+import { CgSize } from 'react-icons/cg'
+import { MdPayment } from 'react-icons/md'
 
 type ConfiguratorPageProps = {
   colonia: string
@@ -40,22 +44,93 @@ export default function ConfiguratorPage({ colonia, windowSize, windowType, paym
     router.replace(`/configurador?${params.toString()}`, { scroll: false })
   }
 
+  console.log(currentStep)
+
   return (
     <>
-      {!colonia && (
-        <div className="container flex flex-col items-center pt-8 px-4 md:px-0 mx-auto max-w-screen-xl text-center lg:pt-16 z-10 relative">
-          <Link
-            href="#"
-            className="inline-flex justify-between items-center py-1 px-1 pe-4 mb-7 text-sm text-blue-700 bg-gray-100 rounded-full dark:bg-blue-900 dark:text-blue-300 hover:bg-gray-200 dark:hover:bg-gray-200"
+      <div className="w-full flex items-center justify-center px-[10%] md:px-[20%]">
+        <ol className="w-full flex  mb-4 sm:mb-5">
+          <li
+            className={clsx(
+              'flex w-full items-center',
+              currentStep > 0 &&
+                'after:w-full after:h-1 after:border-b after:border-blue-300 after:border-4 after:inline-block dark:after:border-gray-700',
+              currentStep <= 0 &&
+                'after:w-full after:h-1 after:border-b after:border-4 after:inline-block after:border-blue-200'
+            )}
           >
-            <span className="text-xs bg-blue-600 rounded-full text-white px-4 py-1.5 me-3">Nuevo</span>{' '}
-            <span className="text-xs md:text-sm font-medium">¡Comienza a configurar tu confort ahora!</span>
-          </Link>
+            <div
+              className={clsx(
+                'flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0',
+                currentStep === 0 && 'bg-blue-200 text-white dark:text-blue-200',
+                currentStep > 0 && 'bg-blue-400 dark:bg-blue-300 text-white',
+                currentStep < 0 && 'bg-white text-blue-300 dark:text-blue-300'
+              )}
+            >
+              <IoLocation style={{ fontSize: '1.5rem' }} />
+            </div>
+          </li>
+          <li
+            className={clsx(
+              'flex w-full items-center',
+              currentStep >= 1 &&
+                'after:w-full after:h-1 after:border-b after:border-blue-300 after:border-4 after:inline-block dark:after:border-gray-700',
+              currentStep < 1 &&
+                'after:w-full after:h-1 after:border-b after:border-4 after:inline-block after:border-blue-200'
+            )}
+          >
+            <div
+              className={clsx(
+                'flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0',
+                currentStep === 1 && 'bg-blue-200 text-white dark:text-blue-200',
+                currentStep > 1 && 'bg-blue-400 dark:bg-blue-300 text-white',
+                currentStep < 1 && 'bg-white text-blue-300 dark:text-blue-300'
+              )}
+            >
+              <BiLogoWindows style={{ fontSize: '1.5rem' }} />
+            </div>
+          </li>
+          <li
+            className={clsx(
+              'flex w-full items-center',
+              currentStep >= 2 &&
+                'after:w-full after:h-1 after:border-b after:border-blue-300 after:border-4 after:inline-block dark:after:border-gray-700',
+              currentStep < 2 &&
+                'after:w-full after:h-1 after:border-b after:border-4 after:inline-block after:border-blue-200'
+            )}
+          >
+            <div
+              className={clsx(
+                'flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0',
+                currentStep === 2 && 'bg-blue-200 text-white dark:text-blue-200',
+                currentStep > 2 && 'bg-blue-400 dark:bg-blue-300 text-white',
+                currentStep < 2 && 'bg-white text-blue-300 dark:text-blue-300'
+              )}
+            >
+              <CgSize style={{ fontSize: '1.5rem' }} />
+            </div>
+          </li>
+          <div
+            className={clsx(
+              'flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0',
+              currentStep === 3 && 'bg-blue-200 text-white dark:text-blue-200',
+              currentStep > 3 && 'bg-blue-400 dark:bg-blue-300 text-white',
+              currentStep < 3 && 'bg-white text-blue-300 dark:text-blue-300'
+            )}
+          >
+            <MdPayment style={{ fontSize: '1.5rem' }} />
+          </div>
+        </ol>
+      </div>
+
+      {!colonia && (
+        <div className="container flex flex-col items-center px-4 md:px-0 mx-auto max-w-screen-xl text-center lg:pt-4 z-10 relative">
           <h1 className="mb-4 text-2xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-            Tu comodidad es nuestra prioridad
+            Configuración
           </h1>
           <p className="mb-8 text-md md:text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-200">
-            En Freddo, te ayudamos a crear un ambiente fresco y cómodo en minutos.
+            En Freddo trabajamos por expandir nuestros servicios a más colonias, por ahora solo estamos sirviendo a las
+            siguientes delegaciones en la Ciudad de México:
           </p>
           <div className="w-full md:w-1/2">
             {/* Selector de Ubicación */}
@@ -68,43 +143,28 @@ export default function ConfiguratorPage({ colonia, windowSize, windowType, paym
           </div>
         </div>
       )}
-      {colonia && (
-        <div className="flex justify-center flex-col items-center mb-6">
-          <div className="flex space-x-2">
-            {[...Array(totalSteps)].map((_, index) => (
-              <div
-                key={index}
-                className={clsx(`w-2 h-2 rounded-full`, {
-                  'bg-blue-100 w-2 h-2': index < currentStep,
-                  'bg-blue-200 w-[20px]': index === currentStep,
-                  'bg-gray-200 w-2 h-2': index > currentStep
-                })}
+      <div className="w-full flex flex-col md:flex-row lg:px-0 flex-wrap gap-4 overflow-auto p-4">
+        <ScrollArea className="w-full flex flex-1">
+          {colonia && (
+            <div className="w-full">
+              <LocationSelector
+                onValidLocation={(colonia: string) => {
+                  updateUrl(colonia, windowType, windowSize, paymentType)
+                }}
+                value={colonia}
               />
-            ))}
+            </div>
+          )}
+          <div className="w-full">
+            {colonia && (
+              <WindowTypeSelector
+                selectedType={windowType}
+                onSelect={(type) => {
+                  updateUrl(colonia, type, windowSize, paymentType)
+                }}
+              />
+            )}
           </div>
-          <p className="text-sm mt-2 ">
-            Paso {currentStep + 1} de {totalSteps}
-          </p>
-        </div>
-      )}
-      <div className="flex px-4 md:px-0 flex-wrap gap-4 w-full overflow-auto">
-        <ScrollArea className="">
-          {colonia && (
-            <LocationSelector
-              onValidLocation={(colonia: string) => {
-                updateUrl(colonia, windowType, windowSize, paymentType)
-              }}
-              value={colonia}
-            />
-          )}
-          {colonia && (
-            <WindowTypeSelector
-              selectedType={windowType}
-              onSelect={(type) => {
-                updateUrl(colonia, type, windowSize, paymentType)
-              }}
-            />
-          )}
           {windowType && (
             <WindowSizeSelector
               selectedSize={windowSize}

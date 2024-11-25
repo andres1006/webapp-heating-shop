@@ -19,9 +19,13 @@ const Summary: FC<SummaryProps> = ({ colonia, windowSize, windowType, paymentTyp
     paymentType: paymentType || ''
   })
   return (
-    <div className="flex p-4 flex-col py-3 w-full md:flex-1 rounded-lg bg-gray-50 gap-4">
+    <div className="flex flex-1 p-4 flex-col py-3 w-full rounded-lg bg-gray-50 gap-4">
       <h2 className="text-xl font-semibold mb-4 text-center">Resumen de Configuración</h2>
-      <>
+      <div className="flex flex-col gap-2">
+        <p className="text-sm capitalize gap-2 flex items-center">
+          <strong className="lowercase first-letter:capitalize">Colonia:</strong>
+          {colonia || 'No seleccionado'}
+        </p>
         <p className="text-sm capitalize gap-2 flex items-center">
           <strong className="lowercase first-letter:capitalize">Tamaño de la ventana:</strong>
           {windowSize || 'No seleccionado'}
@@ -30,7 +34,15 @@ const Summary: FC<SummaryProps> = ({ colonia, windowSize, windowType, paymentTyp
           <strong className="lowercase first-letter:capitalize">Tipo de apertura:</strong>
           {windowType || 'No seleccionado'}
         </p>
-      </>
+        <p className="text-sm capitalize gap-2 flex items-center">
+          <strong className="lowercase first-letter:capitalize">Tipo de Pago:</strong>
+          {paymentType === 'financiacion' ? '12 Meses sin intereses' : 'Contado'}
+        </p>
+        <p className="text-2xl font-semibold capitalize gap-2 flex justify-center mt-5">
+          <strong className="lowercase first-letter:capitalize">Total:</strong>
+          {paymentType === 'financiacion' ? '$ 10.999' : '$ 9.999'} MXN
+        </p>
+      </div>
       <Separator />
       {/* Validación para habilitar el botón solo si ambas opciones están seleccionadas */}
       <Link href={`/checkout?${params.toString()}`}>
@@ -41,8 +53,6 @@ const Summary: FC<SummaryProps> = ({ colonia, windowSize, windowType, paymentTyp
           Proceder a la Compra
         </Button>
       </Link>
-      {paymentType === 'financiacion' && <Separator />}
-      {paymentType === 'financiacion' && <FinancingSimulator />}
     </div>
   )
 }
