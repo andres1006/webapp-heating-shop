@@ -70,7 +70,7 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
           Regresar
         </div>
       </Button>
-      <div className="flex w-full items-center justify-center px-[10%] md:px-[20%]">
+      <div className="flex w-full items-center justify-center px-4 md:px-[20%]">
         <ol className="w-full flex  mb-4 sm:mb-5">
           <li
             className={clsx(
@@ -145,9 +145,9 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
         </ol>
       </div>
       <div className="flex gap-2 w-full flex-wrap justify-center">
-        <div className="w-auto min-w-[50%]">
+        <div className=" w-full md:min-w-[50%]">
           <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit)} className="w-full p-6 rounded-lg bg-gray-50 mb-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full p-5 rounded-lg bg-gray-50 mb-8">
               <UserForm />
               <UbicationForm />
               <Button type="submit" disabled={!isValid}>
@@ -167,7 +167,7 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
             </form>
           </FormProvider>
         </div>
-        <div className="w-auto">
+        <div className="w-full md:min-w-[50%] ">
           <Summary colonia={colonia} windowSize={windowSize} windowType={windowType} paymentType={paymentType} />
         </div>
       </div>

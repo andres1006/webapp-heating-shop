@@ -15,7 +15,7 @@ const Contact = () => {
   return (
     <main className="w-full mx-auto">
       <section className="pt-16 bg-blue-50/30 p-4">
-        <div className="text-center p-8">
+        <div className="text-center pt-8">
           <h1 className="text-5xl font-bold text-blue-400">Habla con Freedo</h1>
           <p className="mt-4 text-gray-700">
             La mayor parte de la información que necesitas se puede encontrar en nuestro sitio web. Para cualquier otra
@@ -24,7 +24,7 @@ const Contact = () => {
           <div className="flex justify-center flex-wrap gap-8 mt-8">
             <Link
               href="/faq"
-              className="flex w-[250px] max-w-md flex-col items-center justify-center bg-white border border-gray-200 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
+              className="flex w-[300px] max-w-md flex-col items-center justify-center bg-white border border-gray-200 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
             >
               <div className="text-4xl text-blue-400 mb-4">
                 <FaQuestionCircle />
@@ -33,7 +33,7 @@ const Contact = () => {
             </Link>
             <Link
               href={`tel:${phone}`}
-              className="flex w-[250px] flex-col items-center justify-center bg-white border border-gray-200 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
+              className="flex w-[300px] flex-col items-center justify-center bg-white border border-gray-200 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
             >
               <div className="text-4xl text-blue-400 mb-4">
                 <FaPhone />
@@ -42,7 +42,7 @@ const Contact = () => {
             </Link>
             <button
               onClick={() => setShowForm(true)}
-              className="flex w-[250px] flex-col items-center justify-center bg-white border border-gray-200 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
+              className="flex w-[300px] flex-col items-center justify-center bg-white border border-gray-200 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
             >
               <div className="text-4xl text-blue-400 mb-4">
                 <FaEnvelope />

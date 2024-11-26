@@ -26,7 +26,14 @@ const Header = () => {
       >
         <div className="flex items-center justify-between w-full">
           <Link href="/">
-            <img src="/assets/logo-horizontal.png" alt="Logo" width={70} height={40} className="hidden md:block" />
+            <img
+              src="/assets/logo-horizontal.png"
+              alt="Logo"
+              width={70}
+              height={40}
+              className="
+             md:block"
+            />
           </Link>
 
           <div className="hidden md:flex md:space-x-8">
@@ -62,7 +69,7 @@ const Header = () => {
               className="text-gray-500 hover:text-gray-700 focus:outline-none"
               aria-label="Abrir menú"
             >
-              <MenuIcon className="h-6 w-6" />
+              <MenuIcon className="h-6 w-6 text-gray-100 hover:text-gray-700 focus:outline-none" />
             </button>
           </div>
         </div>

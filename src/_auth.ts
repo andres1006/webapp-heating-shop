@@ -26,7 +26,6 @@ export const { auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        console.log('login')
         // Simulación de un usuario autenticado
         const user = {
           id: "1",
@@ -36,10 +35,8 @@ export const { auth, signIn, signOut } = NextAuth({
 
         // Simular una validación de credenciales
         if (credentials.email && credentials.password) {
-          console.log('Autenticación exitosa:', user)
           return user as any
         } else {
-          console.error('Credenciales incorrectas')
           return null
         }
       },

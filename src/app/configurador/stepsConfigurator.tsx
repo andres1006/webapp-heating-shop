@@ -44,8 +44,6 @@ export default function ConfiguratorPage({ colonia, windowSize, windowType, paym
     router.replace(`/configurador?${params.toString()}`, { scroll: false })
   }
 
-  console.log(currentStep)
-
   return (
     <>
       <div className="w-full flex items-center justify-center px-[10%] md:px-[20%]">

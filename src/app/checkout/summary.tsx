@@ -44,11 +44,25 @@ const Summary: FC<SummaryProps> = ({ colonia, windowSize, windowType, paymentTyp
         </p>
       </div>
       <Separator />
-      {/* Validación para habilitar el botón solo si ambas opciones están seleccionadas */}
+      <div className="md:hidden rounded-lg bg-white p-2 fixed bottom-5 left-1/2 -translate-x-1/2 flex flex-col md:flex-row items-center justify-center gap-2">
+        <p className=" md:hidden text-sm font-semibold capitalize gap-2 flex justify-center">
+          <strong className="lowercase first-letter:capitalize">Total:</strong>
+          {paymentType === 'financiacion' ? '$ 10.999' : '$ 9.999'} MXN
+        </p>
+        <Link href={`/checkout?${params.toString()}`}>
+          <Button
+            disabled={!windowSize || !windowType || !paymentType || !colonia}
+            className=" w-full md:block md:w-full px-4  py-2 rounded bg-green-600 text-white hover:bg-green-700"
+          >
+            Proceder a la Compra
+          </Button>
+        </Link>
+      </div>
+      {/* boton fijo en la parte de abajo de la pantalla */}
       <Link href={`/checkout?${params.toString()}`}>
         <Button
           disabled={!windowSize || !windowType || !paymentType || !colonia}
-          className="w-full px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+          className="w-full md:block md:w-full px-4  py-2 rounded bg-green-600 text-white hover:bg-green-700"
         >
           Proceder a la Compra
         </Button>

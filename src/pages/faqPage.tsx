@@ -67,10 +67,9 @@ const faqs = [
 const FAQ = () => {
   return (
     <main className="w-full mx-auto">
-      <section className="pt-16  p-4 ">
+      <section className="pt-16 p-4 ">
         <h1 className="text-center text-4xl font-bold my-5">Preguntas frecuentes</h1>
-
-        <div className="px-[20%] flex flex-col gap-4">
+        <div className="md:px-[20%] flex flex-col gap-4">
           {faqs.map((faq) => (
             <Accordion type="single" collapsible>
               <AccordionItem value={faq.id.toString()}>
@@ -81,7 +80,7 @@ const FAQ = () => {
           ))}
         </div>
       </section>
-      <section className="bg-blue-50/30 p-4 flex flex-col items-center ga">
+      <section className="bg-blue-50/30 flex flex-col items-center py-4">
         <h2 className="text-center text-4xl font-bold my-5">¿Tienes alguna pregunta adicional?</h2>
         <p className="text-center text-gray-600">Si no encuentras la respuesta que buscas, no dudes en contactarnos.</p>
         <Link href="/contact" className="bg-blue-400 text-white px-4 py-2 rounded-md mt-10">

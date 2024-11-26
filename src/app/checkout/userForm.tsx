@@ -6,7 +6,7 @@ const UserForm = () => {
   const { register } = useFormContext()
   return (
     <>
-      <h2 className="text-xl font-semibold mb-4">Datos del Usuario</h2>
+      <h2 className=" w-full text-xl font-semibold mb-4">Datos del Usuario</h2>
       <div className="mb-4">
         <label className="block text-gray-700">Nombre</label>
         <Input type="text" placeholder="Juan Perez" required {...register('name')} />

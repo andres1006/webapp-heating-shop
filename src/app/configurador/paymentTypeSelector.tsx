@@ -10,7 +10,6 @@ type PaymentTypeSelectorProps = {
 
 const PaymentTypeSelector = ({ onPaymentTypeSelect, selectedType }: PaymentTypeSelectorProps) => {
   const handleSelect = (paymentType: string) => {
-    console.log(paymentType)
     onPaymentTypeSelect(paymentType)
   }
 
