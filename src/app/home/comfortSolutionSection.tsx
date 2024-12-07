@@ -14,7 +14,7 @@ const ComfortSolutionSection = () => (
       </button>
     </div>
     <div className=" mt-8 md:mt-0 md:w-1/2 flex justify-end">
-      <Image src="/assets/img-1.png" alt="Comfort image" width={500} height={400} className="rounded-lg shadow-md" />
+      <Image src="/assets/img-2.png" alt="Comfort image" width={500} height={400} className="rounded-lg shadow-md" />
     </div>
   </section>
 )

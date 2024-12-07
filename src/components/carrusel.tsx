@@ -29,11 +29,11 @@ const Carousel = () => {
           </div>
         ))}
       </div>
-      <div className="w-full absolute  top-1/2 transform -translate-y-1/2 ease-out">
-        <div className="text-center px-4 md:px-0 fade-in-up">
-          <h1 className="text-md mt-6 md:mt-0 md:text-5xl font-bold text-white text-shadow">
-            <mark className="px-2 text-white bg-blue-300 rounded dark:bg-blue-200">¿Calor?</mark> ¡No mas! Con Freddo,
-            disfruta confort y frescura en un par de clicks
+      <div className="w-full absolute md:mt-5 top-1/2 transform -translate-y-1/2 ease-out">
+        <div className="text-center px-4 md:px-[13%] fade-in-up mt-4">
+          <h1 className="text-md  md:text-2xl  font-bold text-white text-shadow">
+            ¿Calor? ¡No mas! Con Freddo, disfruta confort y frescura en un par de clicks disfruta confort y frescura en
+            un par de clicks
           </h1>
           <p className="text-md md:text-lg text-gray-100 mt-4">
             ¡El único servicio todo incluido de aire acondicionado para tu espacio! Solo contrata y nosotros nos

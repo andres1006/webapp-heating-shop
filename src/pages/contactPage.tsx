@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { phone } from '@/constants'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { FaQuestionCircle, FaPhone, FaEnvelope } from 'react-icons/fa'
@@ -17,6 +18,15 @@ const Contact = () => {
       <section className="pt-16 bg-blue-50/30 p-4">
         <div className="text-center pt-8">
           <h1 className="text-5xl font-bold text-blue-400">Habla con Freedo</h1>
+          <div className=" my-8 md:my-6 md:w-full flex justify-center ">
+            <Image
+              src="/assets/img-6.png"
+              alt="Comfort image"
+              width={500}
+              height={400}
+              className="rounded-lg shadow-md"
+            />
+          </div>
           <p className="mt-4 text-gray-700">
             La mayor parte de la información que necesitas se puede encontrar en nuestro sitio web. Para cualquier otra
             cosa, puedes hablar con nosotros a través de las siguientes opciones.

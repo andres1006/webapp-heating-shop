@@ -9,19 +9,19 @@ const benefits = [
     description:
       'Nosotros nos encargamos de que tu habitación permanezca fría en esta temporada de calor, tú solo relájate.',
     icon: <FaTools size={40} />,
-    image: '/assets/img-1.png'
+    image: '/assets/img-3.png'
   },
   {
     title: 'Mantenimiento Cada 6 Meses',
     description: 'Olvídate de programaciones, nosotros te contactamos.',
     icon: <FaSyncAlt size={40} />,
-    image: '/assets/img-2.png'
+    image: '/assets/img-4.png'
   },
   {
     title: 'Proceso rápido y sencillo',
     description: 'Contrata en minutos con un proceso 100% digital.',
     icon: <FaBolt size={40} />,
-    image: '/assets/img-3.png'
+    image: '/assets/img-5.png'
   }
 ]
 
