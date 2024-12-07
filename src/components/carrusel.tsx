@@ -20,7 +20,7 @@ const Carousel = () => {
   return (
     <div className="relative w-full mx-auto overflow-hidden ">
       <div
-        className="flex transition-transform duration-500 ease-out"
+        className="flex transition-transform duration-500 ease-out h-[50vh]  md:h-[80vh]"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {images.map((image, index) => (
@@ -29,13 +29,13 @@ const Carousel = () => {
           </div>
         ))}
       </div>
-      <div className="w-full absolute md:mt-5 top-1/2 transform -translate-y-1/2 ease-out">
+      <div className="w-full absolute md:mt-5 top-1/2 transform -translate-y-1/2 ease-out ">
         <div className="text-center px-4 md:px-[13%] fade-in-up mt-4">
-          <h1 className="text-md  md:text-2xl  font-bold text-white text-shadow">
+          <h1 className="text-md  md:text-2xl  font-bold text-white text-shadow px-8">
             ¿Calor? ¡No mas! Con Freddo, disfruta confort y frescura en un par de clicks disfruta confort y frescura en
             un par de clicks
           </h1>
-          <p className="text-md md:text-lg text-gray-100 mt-4">
+          <p className="text-md md:text-lg text-gray-100 mt-4 px-8">
             ¡El único servicio todo incluido de aire acondicionado para tu espacio! Solo contrata y nosotros nos
             encargamos de todo.
           </p>
