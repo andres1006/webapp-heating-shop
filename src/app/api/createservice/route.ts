@@ -38,7 +38,7 @@ export interface Payment {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
+  /*   if (req.method === 'POST') {
     const {
       userId,
       windowType,
@@ -95,5 +95,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } else {
     res.setHeader('Allow', ['POST'])
     res.status(405).end(`Method ${req.method} Not Allowed`)
-  }
+  } */
 }

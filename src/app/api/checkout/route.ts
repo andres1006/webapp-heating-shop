@@ -77,7 +77,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
         }
       })
 
-      const response = await sendNotification()
+      /* const response = await sendNotification() */
 
       return NextResponse.json({ init_point: preference.init_point })
     } catch (error) {
