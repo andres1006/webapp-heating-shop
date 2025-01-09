@@ -9,8 +9,8 @@ const navLinks = [
   { href: '/', label: 'Inicio' },
   //{ href: '/service', label: 'Servicios' },
   // { href: '/financiamiento', label: 'Financiamiento' },
-  { href: '/contact', label: 'Contacto' },
-  { href: '/faq', label: 'Preguntas frecuentes' }
+  { href: '/faq', label: 'Preguntas frecuentes' },
+  { href: '/contact', label: 'Contacto' }
 ]
 
 const Header = () => {

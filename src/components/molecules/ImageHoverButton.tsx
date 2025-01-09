@@ -7,8 +7,9 @@ type Props = {
   onClick: () => void
   active: boolean
   backgroundImage?: string
+  dimensions?: string
 }
-const ImageHoverButton = ({ image, imageHover, label, onClick, active, backgroundImage }: Props) => {
+const ImageHoverButton = ({ image, imageHover, label, onClick, active, backgroundImage, dimensions }: Props) => {
   const [isHovered, setIsHovered] = useState(false)
 
   const handleMouseEnter = () => setIsHovered(true)

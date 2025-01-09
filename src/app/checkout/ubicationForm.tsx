@@ -15,8 +15,13 @@ const UbicationForm: FC<UbicationFormProps> = () => {
 
   return (
     <>
-      {name} ahora ingresa tu dirección para la instalación
-      <h2 className="text-xl font-semibold mb-4">Dirección</h2>
+      <h2 className="text-xl font-semibold mb-4">
+        {name}, <span className="text-gray-500 font-normal">ahora ingresa tu dirección para la instalación.</span>
+      </h2>
+      <div className="mb-4">
+        <label className="block text-gray-700">Delegación</label>
+        <Input type="text" placeholder="Colonia" required {...register('nameDelegation')} />
+      </div>
       <div className="mb-4">
         <label className="block text-gray-700">Colonia</label>
         <Input type="text" placeholder="Colonia" required {...register('nameColonia')} />

@@ -4,6 +4,12 @@ import { Button } from '@/components/ui/button'
 import FinancingSimulator from '@/components/molecules/financingSimulatorProps'
 import { Separator } from '@/components/ui/separator'
 
+const dimensions = {
+  pequeña: 'Hasta 1 metro de alto',
+  mediana: 'Entre 1 y 2 metros de alto',
+  grande: 'Mayor a 2 metros de alto'
+}
+
 interface SummaryProps {
   windowSize: string | null
   windowType: string | null
@@ -27,9 +33,12 @@ const Summary: FC<SummaryProps> = ({ colonia, windowSize, windowType, paymentTyp
           {colonia || 'No seleccionado'}
         </p>
         <p className="text-sm capitalize gap-2 flex items-center">
-          <strong className="lowercase first-letter:capitalize">Tamaño de la ventana:</strong>
-          {windowSize || 'No seleccionado'}
+          <strong className="lowercase first-letter:capitalize truncate">Tamaño de la ventana:</strong>
+          <span className="truncate">
+            {windowSize || 'No seleccionado'} ( {dimensions[windowSize as keyof typeof dimensions] || 'No seleccionado'}{' '}
+          </span>
         </p>
+
         <p className="text-sm capitalize gap-2 flex items-center">
           <strong className="lowercase first-letter:capitalize">Tipo de apertura:</strong>
           {windowType || 'No seleccionado'}

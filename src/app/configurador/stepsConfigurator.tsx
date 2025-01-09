@@ -4,7 +4,6 @@ import WindowSizeSelector from './windowsSizeSelector'
 import WindowTypeSelector from './windowTypeSelector'
 import LocationSelector from './locationSelector'
 import PaymentTypeSelector from './paymentTypeSelector'
-import Link from 'next/link'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
@@ -21,7 +20,6 @@ type ConfiguratorPageProps = {
   paymentType: string
 }
 
-const totalSteps = 7
 export default function ConfiguratorPage({ colonia, windowSize, windowType, paymentType }: ConfiguratorPageProps) {
   const router = useRouter()
 
@@ -153,16 +151,14 @@ export default function ConfiguratorPage({ colonia, windowSize, windowType, paym
               />
             </div>
           )}
-          <div className="w-full">
-            {colonia && (
-              <WindowTypeSelector
-                selectedType={windowType}
-                onSelect={(type) => {
-                  updateUrl(colonia, type, windowSize, paymentType)
-                }}
-              />
-            )}
-          </div>
+          {colonia && (
+            <WindowTypeSelector
+              selectedType={windowType}
+              onSelect={(type) => {
+                updateUrl(colonia, type, windowSize, paymentType)
+              }}
+            />
+          )}
           {windowType && (
             <WindowSizeSelector
               selectedSize={windowSize}

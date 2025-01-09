@@ -1,6 +1,6 @@
 'use client'
 import ImageHoverButton from '@/components/molecules/ImageHoverButton'
-import { FC, useState } from 'react'
+import { FC } from 'react'
 
 interface WindowTypeSelectorProps {
   selectedType: string | null
@@ -37,7 +37,7 @@ const WindowTypeSelector: FC<WindowTypeSelectorProps> = ({ selectedType, onSelec
         Instalaremos el equipo cerca de una ventana ya que este expulsa aire caliente que tiene ser expulsado a través
         de una ventana.
       </p>
-      <div className="flex gap-2 overflow-auto p-2 justify-center" style={{ scrollbarWidth: 'none' }}>
+      <div className="flex gap-2 flex-wrap p-2 justify-center" style={{ scrollbarWidth: 'none' }}>
         {types.map((type) => (
           <ImageHoverButton
             image={type.image}

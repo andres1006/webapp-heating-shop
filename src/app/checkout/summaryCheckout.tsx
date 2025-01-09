@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import SubscriptionSummary from './orderSummary'
 import clsx from 'clsx'
 import { Button } from '@/components/ui/button'
@@ -14,6 +14,7 @@ import Summary from './summary'
 import { BiLogoWindows } from 'react-icons/bi'
 import { CgSize } from 'react-icons/cg'
 import { MdPayment } from 'react-icons/md'
+import { getCookie, saveDataInCookie } from '@/lib/utils'
 
 type OrderDetails = {
   colonia: string
@@ -22,12 +23,34 @@ type OrderDetails = {
   paymentType: string
 }
 
+type FormData = {
+  email: string
+  name: string
+  phone: string
+  street: string
+  nameDelegation: string
+  nameColonia: string
+  numberExt: string
+  numberInt: string
+  reference: string
+}
+
 export default function StepsPage({ colonia, windowType, windowSize, paymentType }: OrderDetails) {
   const [currentStep, setCurrentStep] = useState(6)
   const totalSteps = 7
   const router = useRouter()
   const methods = useForm<FormData>({
-    resolver: zodResolver(formSchema)
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: getCookie('email') || '',
+      name: getCookie('name') || '',
+      phone: getCookie('phone') || '',
+      nameDelegation: getCookie('nameDelegation') || colonia || '',
+      street: getCookie('street') || '',
+      numberExt: getCookie('numberExt') || '',
+      numberInt: getCookie('numberInt') || '',
+      reference: getCookie('reference') || ''
+    }
   })
 
   const {
@@ -59,7 +82,42 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
   }
 
   const onSubmit = async (data: FormData) => {
-    console.log('SUCCESS', data)
+    console.log(data)
+    saveDataInCookie('colonia', colonia)
+    saveDataInCookie('windowType', windowType)
+    saveDataInCookie('windowSize', windowSize)
+    saveDataInCookie('paymentType', paymentType)
+    saveDataInCookie('email', data?.email?.toString() || '')
+    saveDataInCookie('name', data?.name?.toString() || '')
+    saveDataInCookie('phone', data?.phone?.toString() || '')
+    saveDataInCookie('nameDelegation', data?.nameDelegation?.toString() || '')
+    saveDataInCookie('nameColonia', data?.nameColonia?.toString() || '')
+    saveDataInCookie('street', data?.street?.toString() || '')
+    saveDataInCookie('numberExt', data?.numberExt?.toString() || '')
+    saveDataInCookie('numberInt', data?.numberInt?.toString() || '')
+    saveDataInCookie('reference', data?.reference?.toString() || '')
+    // id el metodo de pago es contado enviar a mercapago api sino enviar solicitud y guardar en la base de datos
+    // enviar a mercapago api
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ windowType, windowSize, colonia, paymentType, ...data })
+      })
+
+      const result = await response.json()
+      console.log(result)
+      if (response.ok) {
+        // Redirige al usuario a la URL de pago de MercadoPago
+        window.location.href = result.init_point
+      } else {
+        router.push(`/failure`)
+      }
+    } catch (error) {
+      router.push(`/failure`)
+    }
   }
 
   return (
@@ -151,7 +209,7 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
               <UserForm />
               <UbicationForm />
               <Button type="submit" disabled={!isValid}>
-                Continuar
+                Ir a pagar
               </Button>
               {/* validate object empty */}
               {currentStep === 7 && (
