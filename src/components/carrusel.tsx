@@ -21,7 +21,7 @@ const Carousel = () => {
   return (
     <div className="relative w-full mx-auto overflow-hidden ">
       <div
-        className="flex transition-transform duration-500 ease-out h-[40vh] md:h-[80vh]"
+        className="flex transition-transform duration-500 ease-out h-[35vh] md:h-[80vh]"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {imagesMd.map((image, index) => (
