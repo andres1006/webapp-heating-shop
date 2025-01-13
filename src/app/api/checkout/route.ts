@@ -2,7 +2,13 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { MercadoPagoConfig, Payment, Preference } from 'mercadopago'
 import { v4 as uuidv4 } from 'uuid'
 import { NextResponse } from 'next/server'
-import { APLICATION_ID_ONE_SIGNAL, emailSoporteFreddo, KEY_ONE_SIGNAL } from '@/constants'
+import {
+  APLICATION_ID_ONE_SIGNAL,
+  emailSoporteFreddo,
+  KEY_ONE_SIGNAL,
+  PRICE_INSTALLATION_CONTADO,
+  PRICE_INSTALLATION_FINANCIADO
+} from '@/constants'
 import { URL_ONE_SIGNAL } from '@/constants'
 
 const PUBLIC_APP_USR = 'APP_USR-c6ae916f-2116-460e-a92b-bdb05d79630f'
@@ -37,7 +43,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const email = cookies?._parsed?.get('email')?.value || ''
   const name = cookies?._parsed?.get('name')?.value || ''
   const phone = cookies?._parsed?.get('phone')?.value || ''
-  const totalAmount = paymentType === 'financiacion' ? 10999 : 9999
+  const totalAmount = paymentType === 'financiacion' ? PRICE_INSTALLATION_FINANCIADO : PRICE_INSTALLATION_CONTADO
 
   if (colonia === '' || windowType === '' || windowSize === '' || paymentType === '' || email === '') {
     return NextResponse.json({ error: 'Datos incompletos' })
