@@ -60,7 +60,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
               id: uuidv4(),
               title,
               description,
-              unit_price: totalAmount || 1000,
+              unit_price: Number(totalAmount),
               quantity: 1
             }
           ],
