@@ -13,10 +13,15 @@ import { MercadoPagoConfig, Payment } from 'mercadopago'
 }) */
 
 export async function POST(request: NextRequest) {
-  //get body from request
-  const body = await request.json()
+  try {
+    //get body from request
+    const body = await request.json()
 
-  console.log('body', body)
+    console.log('body', body)
 
-  return NextResponse.json({ message: 'Payment notification received' })
+    return NextResponse.json({ message: 'Payment notification received' })
+  } catch (error) {
+    console.error('Error', error)
+    return NextResponse.json({ message: 'Error al recibir la notificación de pago', error }, { status: 500 })
+  }
 }
