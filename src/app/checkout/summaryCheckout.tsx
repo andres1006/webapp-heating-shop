@@ -8,13 +8,14 @@ import UserForm from './userForm'
 import { useRouter } from 'next/navigation'
 import UbicationForm from './ubicationForm'
 import { FormProvider, useForm } from 'react-hook-form'
-import { formSchema } from './validation'
+import { formSchema, formSchemaLoginOrSignup } from './validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Summary from './summary'
 import { BiLogoWindows } from 'react-icons/bi'
 import { CgSize } from 'react-icons/cg'
 import { MdPayment } from 'react-icons/md'
 import { getCookie, saveDataInCookie } from '@/lib/utils'
+import { Signup } from './signup'
 
 type OrderDetails = {
   colonia: string
@@ -23,8 +24,11 @@ type OrderDetails = {
   paymentType: string
 }
 
-type FormData = {
+type FormDataLoginOrSignup = {
   email: string
+}
+
+type FormData = {
   name: string
   phone: string
   street: string
@@ -37,12 +41,14 @@ type FormData = {
 
 export default function StepsPage({ colonia, windowType, windowSize, paymentType }: OrderDetails) {
   const [currentStep, setCurrentStep] = useState(6)
+  const [isLoginOrSignup, setIsLoginOrSignup] = useState<
+    'CONFIRM_EMAIL' | 'USER_EXISTS' | 'USER_VALIDATED' | 'INIT_SESSION'
+  >('INIT_SESSION')
   const totalSteps = 7
   const router = useRouter()
   const methods = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: getCookie('email') || '',
       name: getCookie('name') || '',
       phone: getCookie('phone') || '',
       nameDelegation: getCookie('nameDelegation') || colonia || '',
@@ -52,11 +58,21 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
       reference: getCookie('reference') || ''
     }
   })
-
   const {
     handleSubmit,
     formState: { errors, isValid }
   } = methods
+
+  const methodsLoginOrSignup = useForm<FormDataLoginOrSignup>({
+    resolver: zodResolver(formSchemaLoginOrSignup),
+    defaultValues: {
+      email: getCookie('email') || ''
+    }
+  })
+  const {
+    handleSubmit: handleSubmitLoginOrSignup,
+    formState: { errors: errorsLoginOrSignup, isValid: isValidLoginOrSignup }
+  } = methodsLoginOrSignup
 
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
@@ -82,12 +98,14 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
   }
 
   const onSubmit = async (data: FormData) => {
-    console.log(data)
+    console.log('sender', data)
+
+    // TODO: create action to update user information
+
     saveDataInCookie('colonia', colonia)
     saveDataInCookie('windowType', windowType)
     saveDataInCookie('windowSize', windowSize)
     saveDataInCookie('paymentType', paymentType)
-    saveDataInCookie('email', data?.email?.toString() || '')
     saveDataInCookie('name', data?.name?.toString() || '')
     saveDataInCookie('phone', data?.phone?.toString() || '')
     saveDataInCookie('nameDelegation', data?.nameDelegation?.toString() || '')
@@ -97,7 +115,7 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
     saveDataInCookie('numberInt', data?.numberInt?.toString() || '')
     saveDataInCookie('reference', data?.reference?.toString() || '')
     // id el metodo de pago es contado enviar a mercapago api sino enviar solicitud y guardar en la base de datos
-    // enviar a mercapago api
+    // // enviar a mercapago api
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
@@ -117,6 +135,27 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
       }
     } catch (error) {
       router.push(`/failure`)
+    }
+  }
+
+  const onSubmitLoginOrSignup = async (data: FormDataLoginOrSignup) => {
+    try {
+      const response = await Signup({
+        email: data?.email?.toString() || ''
+      })
+      if (response.code === 'CONFIRM_EMAIL') {
+        setIsLoginOrSignup(response.code)
+        // TODO: save cookies info product
+        return
+      }
+      if (response.code === 'USER_EXISTS') {
+        // TODO: update form detatails
+        setIsLoginOrSignup(response.code)
+        return
+      }
+      console.log('response', response)
+    } catch (error) {
+      console.log('error', error)
     }
   }
 
@@ -203,27 +242,49 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
         </ol>
       </div>
       <div className="flex gap-2 w-full flex-wrap justify-center">
-        <div className=" w-full md:min-w-[50%]">
-          <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit)} className="w-full p-5 rounded-lg bg-gray-50 mb-8">
+        <div className="w-full md:min-w-[50%]">
+          {isLoginOrSignup === 'CONFIRM_EMAIL' && (
+            <div className="w-full p-5 rounded-lg bg-gray-50 mb-8">
+              <p>Por favor, confirma tu correo electrónico para continuar.</p>
+            </div>
+          )}
+
+          {/* Formulario de registro de correo */}
+          <FormProvider {...methodsLoginOrSignup}>
+            <form
+              onSubmit={handleSubmitLoginOrSignup(onSubmitLoginOrSignup)}
+              className="w-full p-5 rounded-lg bg-gray-50 mb-8"
+            >
               <UserForm />
-              <UbicationForm />
-              <Button type="submit" disabled={!isValid}>
-                Ir a pagar
+              <Button type="submit" disabled={!isValidLoginOrSignup}>
+                Registrar correo
               </Button>
-              {/* validate object empty */}
-              {currentStep === 7 && (
-                <SubscriptionSummary
-                  productName={windowType}
-                  address="12 9a 85, Centro (Área 9), Ciudad de México, Ciudad de México. 06090"
-                  originalPrice={369}
-                  discountCode="BUENFIN24"
-                  total={258.3}
-                  onAddPaymentMethod={handleNext}
-                />
-              )}
             </form>
           </FormProvider>
+          {isLoginOrSignup === 'USER_VALIDATED' ||
+            (isLoginOrSignup === 'USER_EXISTS' && (
+              <FormProvider {...methods}>
+                <form onSubmit={handleSubmit(onSubmit)} className="w-full p-5 rounded-lg bg-gray-50 mb-8">
+                  <UbicationForm />
+                  <div className="flex gap-2">
+                    <Button type="submit" disabled={!isValid}>
+                      Ir a pagar
+                    </Button>
+                  </div>
+                  {/* validate object empty */}
+                  {currentStep === 7 && (
+                    <SubscriptionSummary
+                      productName={windowType}
+                      address="12 9a 85, Centro (Área 9), Ciudad de México, Ciudad de México. 06090"
+                      originalPrice={369}
+                      discountCode="BUENFIN24"
+                      total={258.3}
+                      onAddPaymentMethod={handleNext}
+                    />
+                  )}
+                </form>
+              </FormProvider>
+            ))}
         </div>
         <div className="w-full md:min-w-[50%] ">
           <Summary colonia={colonia} windowSize={windowSize} windowType={windowType} paymentType={paymentType} />

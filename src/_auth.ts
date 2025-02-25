@@ -1,36 +1,34 @@
-
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import { authConfig } from "./_auth.config";
+import NextAuth from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
+import { authConfig } from './_auth.config'
 
 type User = {
-  id: string;
-  codigoEmpresa: string;
-  codigoUsuario: string;
-  nombreEmpresa: string;
-  nombreUsuario: string;
-  dobleFactor: boolean;
-  restablecerClave: boolean;
-  error: string | null;
-  permisos: { [key: string]: string[] };
-};
-
+  id: string
+  codigoEmpresa: string
+  codigoUsuario: string
+  nombreEmpresa: string
+  nombreUsuario: string
+  dobleFactor: boolean
+  restablecerClave: boolean
+  error: string | null
+  permisos: { [key: string]: string[] }
+}
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
         // Simulación de un usuario autenticado
         const user = {
-          id: "1",
-          name: "John Doe",
-          email: credentials.email,
+          id: '1',
+          name: 'John Doe',
+          email: credentials.email
         }
 
         // Simular una validación de credenciales
@@ -39,15 +37,14 @@ export const { auth, signIn, signOut } = NextAuth({
         } else {
           return null
         }
-      },
-    }),
+      }
+    })
   ],
   pages: {
-    signIn: '/',
+    signIn: '/'
   },
   session: {
-    strategy: 'jwt',
-
+    strategy: 'jwt'
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -61,8 +58,7 @@ export const { auth, signIn, signOut } = NextAuth({
       return session
     },
     async authorized({ auth, request: { nextUrl } }) {
-      return true;
-    },
+      return true
+    }
   }
-});
-
+})

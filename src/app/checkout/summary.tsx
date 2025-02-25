@@ -9,15 +9,19 @@ interface SummaryProps {
   windowType: string | null
   paymentType: string | null
   colonia: string | null
+  showButtonToPay?: boolean
 }
 
-const Summary: FC<SummaryProps> = ({ colonia, windowSize, windowType, paymentType }) => {
+const Summary: FC<SummaryProps> = ({ colonia, windowSize, windowType, paymentType, showButtonToPay = false }) => {
   const params = new URLSearchParams({
     colonia: colonia || '',
     windowType: windowType || '',
     windowSize: windowSize || '',
     paymentType: paymentType || ''
   })
+
+  const canUserDoBuy = !windowSize || !windowType || !paymentType || !colonia
+
   return (
     <div className="flex flex-1 p-4 flex-col py-3 w-full rounded-lg bg-gray-50 gap-4">
       <h2 className="text-xl font-semibold mb-4 text-center">Resumen de Configuración</h2>
@@ -43,30 +47,36 @@ const Summary: FC<SummaryProps> = ({ colonia, windowSize, windowType, paymentTyp
           {paymentType === 'financiacion' ? '$ 10.999' : '$ 9.999'} MXN
         </p>
       </div>
-      <Separator />
-      <div className="md:hidden rounded-lg bg-white p-2 fixed bottom-5 left-1/2 -translate-x-1/2 flex flex-col md:flex-row items-center justify-center gap-2">
-        <p className=" md:hidden text-sm font-semibold capitalize gap-2 flex justify-center">
-          <strong className="lowercase first-letter:capitalize">Total:</strong>
-          {paymentType === 'financiacion' ? '$ 10.999' : '$ 9.999'} MXN
-        </p>
+      {showButtonToPay && (
+        <>
+          <Separator />
+          <div className="md:hidden rounded-lg bg-white p-2 fixed bottom-5 left-1/2 -translate-x-1/2 flex flex-col md:flex-row items-center justify-center gap-2">
+            <p className=" md:hidden text-sm font-semibold capitalize gap-2 flex justify-center">
+              <strong className="lowercase first-letter:capitalize">Total:</strong>
+              {paymentType === 'financiacion' ? '$ 10.999' : '$ 9.999'} MXN
+            </p>
+            <Link href={`/checkout?${params.toString()}`}>
+              <Button
+                disabled={canUserDoBuy}
+                className=" w-full md:block md:w-full px-4  py-2 rounded bg-green-600 text-white hover:bg-green-700"
+              >
+                Proceder a la Compra
+              </Button>
+            </Link>
+          </div>
+        </>
+      )}
+      {/* boton fijo en la parte de abajo de la pantalla */}
+      {showButtonToPay && (
         <Link href={`/checkout?${params.toString()}`}>
           <Button
-            disabled={!windowSize || !windowType || !paymentType || !colonia}
-            className=" w-full md:block md:w-full px-4  py-2 rounded bg-green-600 text-white hover:bg-green-700"
+            disabled={canUserDoBuy}
+            className="w-full md:block md:w-full px-4  py-2 rounded bg-green-600 text-white hover:bg-green-700"
           >
             Proceder a la Compra
           </Button>
         </Link>
-      </div>
-      {/* boton fijo en la parte de abajo de la pantalla */}
-      <Link href={`/checkout?${params.toString()}`}>
-        <Button
-          disabled={!windowSize || !windowType || !paymentType || !colonia}
-          className="w-full md:block md:w-full px-4  py-2 rounded bg-green-600 text-white hover:bg-green-700"
-        >
-          Proceder a la Compra
-        </Button>
-      </Link>
+      )}
     </div>
   )
 }

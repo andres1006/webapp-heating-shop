@@ -2,6 +2,7 @@
 import { cookies } from 'next/headers'
 import StepsPage from './summaryCheckout'
 import { redirect } from 'next/navigation'
+import { createClient } from '@/utils/supabase/server'
 
 type SearchParams = {
   colonia: string
@@ -25,6 +26,13 @@ const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
     })
     redirect(`/configurador?${params.toString()}`)
   }
+
+  const supabase = await createClient()
+
+  const { data, error } = await supabase.auth.getUser()
+
+  console.log('data', data)
+  console.log('error', error)
 
   return (
     <div className="container mx-auto pt-20 px-4">

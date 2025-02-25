@@ -12,7 +12,9 @@ import {
 import { URL_ONE_SIGNAL } from '@/constants'
 
 const PUBLIC_APP_USR = 'APP_USR-c6ae916f-2116-460e-a92b-bdb05d79630f'
+// Micke
 const ACCESS_TOKEN = 'APP_USR-7917833599682123-121021-f43531d4b7864edde3be7beb8ed22a77-122889697'
+// Pipe
 //const ACCESS_TOKEN = 'TEST-6095836766125645-010917-31ec1781ab40bd4da7be2931a00c0f80-308042976'
 const PUBLIC_KEY = 'APP_USR-078dd8e0-437a-4bc2-b81e-3fb0e8fd5f0c'
 const CLIENT_ID = '7917833599682123'
@@ -79,7 +81,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
           auto_return: 'approved',
           payment_methods: {
             installments: 12 // Número máximo de cuotas permitidas
-          }
+          },
+          notification_url: `${process.env.NEXT_PUBLIC_URL}/api/checkout/notification`
         }
       })
 

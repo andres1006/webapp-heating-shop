@@ -5,19 +5,21 @@ import { useFormContext } from 'react-hook-form'
 interface UbicationFormProps {}
 
 const UbicationForm: FC<UbicationFormProps> = () => {
-  const { register, watch } = useFormContext()
-
-  const name = watch('name')
-  const email = watch('email')
-  const phone = watch('phone')
-
-  if (!name || !email || !phone) return null
+  const { register } = useFormContext()
 
   return (
     <>
       <h2 className="text-xl font-semibold mb-4">
-        {name}, <span className="text-gray-500 font-normal">ahora ingresa tu dirección para la instalación.</span>
+        <span className="text-gray-500 font-normal">Ahora completa tu información para la instalación.</span>
       </h2>
+      <div className="mb-4">
+        <label className="block text-gray-700">Nombre</label>
+        <Input type="text" placeholder="Juan Perez" required {...register('name')} />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700">Teléfono</label>
+        <Input type="tel" placeholder="55 5555 5555" required {...register('phone')} />
+      </div>
       <div className="mb-4">
         <label className="block text-gray-700">Delegación</label>
         <Input type="text" placeholder="Colonia" required {...register('nameDelegation')} />
