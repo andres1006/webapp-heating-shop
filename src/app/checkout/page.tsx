@@ -1,25 +1,24 @@
 'use server'
-import { cookies } from 'next/headers'
 import StepsPage from './summaryCheckout'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 
 type SearchParams = {
-  colonia: string
+  nameDelegation: string
   windowType: string
   windowSize: string
   paymentType: string
 }
 
 const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
-  const colonia = searchParams?.colonia || ''
+  const nameDelegation = searchParams?.nameDelegation || ''
   const windowType = searchParams?.windowType || ''
   const windowSize = searchParams?.windowSize || ''
   const paymentType = searchParams?.paymentType || ''
 
-  if (!colonia || !windowType || !windowSize || !paymentType) {
+  if (!nameDelegation || !windowType || !windowSize || !paymentType) {
     const params = new URLSearchParams({
-      colonia: colonia,
+      nameDelegation: nameDelegation,
       windowType: windowType,
       windowSize: windowSize,
       paymentType: paymentType
@@ -31,13 +30,11 @@ const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
 
   const { data, error } = await supabase.auth.getUser()
 
-  console.log('data', data)
-  console.log('error', error)
-
   return (
     <div className="container mx-auto pt-20 px-4">
       <StepsPage
-        colonia={searchParams?.colonia || ''}
+        user={data?.user}
+        nameDelegation={searchParams?.nameDelegation || ''}
         windowType={searchParams?.windowType || ''}
         windowSize={searchParams?.windowSize || ''}
         paymentType={searchParams?.paymentType || ''}

@@ -12,12 +12,15 @@ import { MercadoPagoConfig, Payment } from 'mercadopago'
     process.env.MERCADO_PAGO_CLIENT_SECRET || 'd5e339984067e2bfb33c8ed801ed72418173589e562e837a603166f1321085a0'
 }) */
 
+//https://hook.us2.make.com/e45u7bqfw9io2p4530ow2shmasmp2pk2
 export async function POST(request: NextRequest) {
   try {
     //get body from request
     const body = await request.json()
 
     console.log('body', body)
+
+
 
     return NextResponse.json({ message: 'Payment notification received' })
   } catch (error) {

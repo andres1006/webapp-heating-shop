@@ -1,8 +1,11 @@
+'use server'
 import { type EmailOtpType } from '@supabase/supabase-js'
 import { type NextRequest } from 'next/server'
 
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
+import { PRICE_INSTALLATION_CONTADO } from '@/constants'
+import { PRICE_INSTALLATION_FINANCIADO } from '@/constants'
 
 export async function GET(request: NextRequest) {
   console.log('request', request.url)
@@ -28,14 +31,22 @@ export async function GET(request: NextRequest) {
       // redirect user to specified redirect URL or root of app
       // TODO: get product info from cookies
       // get queryparam from cookies
-      // const params = new URLSearchParams({
-      //   colonia: colonia,
-      //   windowType: windowType,
-      //   windowSize: windowSize,
-      //   paymentType: paymentType
-      // })
-      // redirect(`${next}?${params.toString()}`)
-      redirect(`${next}`)
+      // get cockies server 
+      const cookies: any = request.cookies
+
+      // read cookies
+      const colonia = cookies?._parsed?.get('colonia')?.value || ''
+      const windowType = cookies?._parsed?.get('windowType')?.value || ''
+      const windowSize = cookies?._parsed?.get('windowSize')?.value || ''
+      const paymentType = cookies?._parsed?.get('paymentType')?.value || ''
+
+      const params = new URLSearchParams({
+        colonia: colonia,
+        windowType: windowType,
+        windowSize: windowSize,
+        paymentType: paymentType
+      })
+      redirect(`${next}?${params.toString()}`)
     }
   }
 

@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import SubscriptionSummary from './orderSummary'
 import clsx from 'clsx'
 import { Button } from '@/components/ui/button'
@@ -13,15 +13,21 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import Summary from './summary'
 import { BiLogoWindows } from 'react-icons/bi'
 import { CgSize } from 'react-icons/cg'
-import { MdPayment } from 'react-icons/md'
+import { MdPayment, MdSummarize } from 'react-icons/md'
 import { getCookie, saveDataInCookie } from '@/lib/utils'
 import { Signup } from './signup'
+import { User } from '@supabase/supabase-js'
+import { updateUser } from '../api/actions/user'
+import { createProduct } from '../api/actions/product'
+import { useSequentialScrollToSection } from '@/hooks/useScrollToSection'
+import FloatingLink from '@/components/FloatingLink'
 
 type OrderDetails = {
-  colonia: string
+  nameDelegation: string
   windowType: string
   windowSize: string
   paymentType: string
+  user: User | null
 }
 
 type FormDataLoginOrSignup = {
@@ -39,23 +45,53 @@ type FormData = {
   reference: string
 }
 
-export default function StepsPage({ colonia, windowType, windowSize, paymentType }: OrderDetails) {
+export default function StepsPage({ nameDelegation, windowType, windowSize, paymentType, user }: OrderDetails) {
   const [currentStep, setCurrentStep] = useState(6)
   const [isLoginOrSignup, setIsLoginOrSignup] = useState<
-    'CONFIRM_EMAIL' | 'USER_EXISTS' | 'USER_VALIDATED' | 'INIT_SESSION'
-  >('INIT_SESSION')
+    'CONFIRM_EMAIL' | 'USER_SESSION' | 'USER_VALIDATED' | 'INIT_SESSION'
+  >(user ? 'USER_SESSION' : 'INIT_SESSION')
   const totalSteps = 7
   const router = useRouter()
+
+  // Referencias para las secciones de pasos
+  const stepSectionRef = useRef<HTMLDivElement>(null)
+  const userFormRef = useRef<HTMLDivElement>(null)
+  const ubicationFormRef = useRef<HTMLFormElement>(null)
+  const loginFormRef = useRef<HTMLFormElement>(null)
+  const summaryRef = useRef<HTMLDivElement>(null)
+
+  // Utilizar el hook personalizado para el desplazamiento secuencial
+  useSequentialScrollToSection(
+    [currentStep, isLoginOrSignup],
+    [
+      // Primero desplazarse a la sección de pasos
+      { condition: true, ref: stepSectionRef, sequentialDelay: 0 },
+      // Luego, dependiendo del paso actual, desplazarse a la sección específica
+      {
+        condition: currentStep === 6 && !!userFormRef.current,
+        ref: userFormRef,
+        sequentialDelay: 300
+      },
+      {
+        condition: currentStep === 7 && !!ubicationFormRef.current,
+        ref: ubicationFormRef,
+        sequentialDelay: 300
+      }
+    ],
+    { behavior: 'smooth', block: 'center', delay: 100 }
+  )
+
   const methods = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: getCookie('name') || '',
-      phone: getCookie('phone') || '',
-      nameDelegation: getCookie('nameDelegation') || colonia || '',
-      street: getCookie('street') || '',
-      numberExt: getCookie('numberExt') || '',
-      numberInt: getCookie('numberInt') || '',
-      reference: getCookie('reference') || ''
+      name: user?.user_metadata?.name || '',
+      phone: user?.user_metadata?.phone || '',
+      nameDelegation: user?.user_metadata?.nameDelegation || nameDelegation || '',
+      nameColonia: user?.user_metadata?.nameColonia || '',
+      street: user?.user_metadata?.street || '',
+      numberExt: user?.user_metadata?.numberExt || '',
+      numberInt: user?.user_metadata?.numberInt || '',
+      reference: user?.user_metadata?.reference || ''
     }
   })
   const {
@@ -66,7 +102,7 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
   const methodsLoginOrSignup = useForm<FormDataLoginOrSignup>({
     resolver: zodResolver(formSchemaLoginOrSignup),
     defaultValues: {
-      email: getCookie('email') || ''
+      email: user?.email || ''
     }
   })
   const {
@@ -85,7 +121,7 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
       setCurrentStep((prev) => {
         if (prev === 6) {
           const params = new URLSearchParams({
-            colonia: colonia,
+            nameDelegation: nameDelegation,
             windowType: windowType,
             windowSize: windowSize,
             paymentType: paymentType
@@ -98,22 +134,29 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
   }
 
   const onSubmit = async (data: FormData) => {
-    console.log('sender', data)
-
+    if (!user) {
+      return
+    }
     // TODO: create action to update user information
+    const { data: userData, error } = await updateUser({
+      name: data?.name?.toString() || '',
+      phone: data?.phone?.toString() || '',
+      street: data?.street?.toString() || '',
+      numberExt: data?.numberExt?.toString() || '',
+      numberInt: data?.numberInt?.toString() || '',
+      reference: data?.reference?.toString() || '',
+      nameColonia: data?.nameColonia?.toString() || '',
+      nameDelegation: data?.nameDelegation?.toString() || ''
+    })
 
-    saveDataInCookie('colonia', colonia)
+    if (error) {
+      console.log('error', error)
+    }
+
     saveDataInCookie('windowType', windowType)
     saveDataInCookie('windowSize', windowSize)
     saveDataInCookie('paymentType', paymentType)
-    saveDataInCookie('name', data?.name?.toString() || '')
-    saveDataInCookie('phone', data?.phone?.toString() || '')
-    saveDataInCookie('nameDelegation', data?.nameDelegation?.toString() || '')
-    saveDataInCookie('nameColonia', data?.nameColonia?.toString() || '')
-    saveDataInCookie('street', data?.street?.toString() || '')
-    saveDataInCookie('numberExt', data?.numberExt?.toString() || '')
-    saveDataInCookie('numberInt', data?.numberInt?.toString() || '')
-    saveDataInCookie('reference', data?.reference?.toString() || '')
+
     // id el metodo de pago es contado enviar a mercapago api sino enviar solicitud y guardar en la base de datos
     // // enviar a mercapago api
     try {
@@ -122,12 +165,31 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ windowType, windowSize, colonia, paymentType, ...data })
+        body: JSON.stringify({ windowType, windowSize, paymentType, ...data })
       })
 
       const result = await response.json()
-      console.log(result)
+      if (result.error || !result?.init_point) {
+        alert(result.error)
+        return
+      }
+
       if (response.ok) {
+        const { data, error } = await createProduct({
+          windowType,
+          windowSize,
+          paymentType,
+          price: paymentType === 'financiacion' ? 10999 : 9999,
+          status: 'pending',
+          link_payment: result.init_point,
+          Id_user: user?.id || '',
+          client_id: result.client_id
+        })
+        if (error) {
+          router.push(`/failure`)
+          return
+        }
+
         // Redirige al usuario a la URL de pago de MercadoPago
         window.location.href = result.init_point
       } else {
@@ -143,17 +205,31 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
       const response = await Signup({
         email: data?.email?.toString() || ''
       })
+      console
       if (response.code === 'CONFIRM_EMAIL') {
+        saveDataInCookie('nameDelegation', nameDelegation)
+        saveDataInCookie('windowType', windowType)
+        saveDataInCookie('windowSize', windowSize)
+        saveDataInCookie('paymentType', paymentType)
         setIsLoginOrSignup(response.code)
         // TODO: save cookies info product
         return
       }
-      if (response.code === 'USER_EXISTS') {
+      if (response.code === 'USER_SESSION') {
+        methods.setValue('name', response?.data?.user?.user_metadata?.name || '')
+        methods.setValue('phone', response?.data?.user?.user_metadata?.phone || '')
+        methods.setValue('nameDelegation', response?.data?.user?.user_metadata?.nameDelegation || '')
+        methods.setValue('street', response?.data?.user?.user_metadata?.street || '')
+        methods.setValue('numberExt', response?.data?.user?.user_metadata?.numberExt || '')
+        methods.setValue('numberInt', response?.data?.user?.user_metadata?.numberInt || '')
+        methods.setValue('reference', response?.data?.user?.user_metadata?.reference || '')
         // TODO: update form detatails
         setIsLoginOrSignup(response.code)
         return
       }
-      console.log('response', response)
+      if (response.code === 'ERROR') {
+        router.push(`/failure`)
+      }
     } catch (error) {
       console.log('error', error)
     }
@@ -161,13 +237,21 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
 
   return (
     <>
+      {/* Enlace flotante al resumen */}
+      <FloatingLink
+        targetRef={summaryRef}
+        label={`Ir a pagar ${paymentType === 'financiacion' ? '10.999' : '9.999'} MXN`}
+        icon={<MdSummarize className="mr-2" />}
+        position="bottom-left"
+      />
+
       <Button variant="link" onClick={handlePrevious}>
         <div className="flex items-center gap-2">
           <IoArrowBackSharp />
           Regresar
         </div>
       </Button>
-      <div className="flex w-full items-center justify-center px-4 md:px-[20%]">
+      <div className="flex w-full items-center justify-center px-4 md:px-[20%]" ref={stepSectionRef}>
         <ol className="w-full flex  mb-4 sm:mb-5">
           <li
             className={clsx(
@@ -241,30 +325,54 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
           </div>
         </ol>
       </div>
-      <div className="flex gap-2 w-full flex-wrap justify-center">
+      <div className="flex gap-2 w-full flex-wrap justify-center flex-col md:flex-row">
         <div className="w-full md:min-w-[50%]">
           {isLoginOrSignup === 'CONFIRM_EMAIL' && (
-            <div className="w-full p-5 rounded-lg bg-gray-50 mb-8">
-              <p>Por favor, confirma tu correo electrónico para continuar.</p>
+            <div className="w-full p-5 rounded-lg mb-8 text-center" ref={userFormRef}>
+              <p className="text-lg font-bold">Por favor, confirma tu correo electrónico para continuar.</p>
+              <Button
+                onClick={async () => {
+                  await Signup({
+                    email: user?.email || ''
+                  })
+                }}
+              >
+                Reenviar correo
+              </Button>
             </div>
           )}
 
           {/* Formulario de registro de correo */}
-          <FormProvider {...methodsLoginOrSignup}>
-            <form
-              onSubmit={handleSubmitLoginOrSignup(onSubmitLoginOrSignup)}
-              className="w-full p-5 rounded-lg bg-gray-50 mb-8"
-            >
-              <UserForm />
-              <Button type="submit" disabled={!isValidLoginOrSignup}>
-                Registrar correo
-              </Button>
-            </form>
-          </FormProvider>
+          {isLoginOrSignup === 'INIT_SESSION' && !user?.email && (
+            <FormProvider {...methodsLoginOrSignup}>
+              <form
+                onSubmit={handleSubmitLoginOrSignup(onSubmitLoginOrSignup)}
+                className="w-full p-5 rounded-lg bg-gray-50 mb-8"
+                ref={loginFormRef}
+              >
+                <UserForm />
+                <Button type="submit" disabled={!isValidLoginOrSignup}>
+                  Registrar correo
+                </Button>
+              </form>
+            </FormProvider>
+          )}
+          {isLoginOrSignup === 'USER_SESSION' && user?.email && (
+            <div className="w-full p-5 rounded-lg" ref={userFormRef}>
+              <p className="text-lg font-bold">
+                Correo: <span className="text-blue-400 font-normal">{user?.email}</span>
+              </p>
+            </div>
+          )}
+
           {isLoginOrSignup === 'USER_VALIDATED' ||
-            (isLoginOrSignup === 'USER_EXISTS' && (
+            (isLoginOrSignup === 'USER_SESSION' && (
               <FormProvider {...methods}>
-                <form onSubmit={handleSubmit(onSubmit)} className="w-full p-5 rounded-lg bg-gray-50 mb-8">
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className="w-full p-5 rounded-lg bg-gray-50 mb-8"
+                  ref={ubicationFormRef}
+                >
                   <UbicationForm />
                   <div className="flex gap-2">
                     <Button type="submit" disabled={!isValid}>
@@ -286,8 +394,13 @@ export default function StepsPage({ colonia, windowType, windowSize, paymentType
               </FormProvider>
             ))}
         </div>
-        <div className="w-full md:min-w-[50%] ">
-          <Summary colonia={colonia} windowSize={windowSize} windowType={windowType} paymentType={paymentType} />
+        <div className="w-full md:min-w-[50%]" ref={summaryRef}>
+          <Summary
+            nameDelegation={nameDelegation}
+            windowSize={windowSize}
+            windowType={windowType}
+            paymentType={paymentType}
+          />
         </div>
       </div>
     </>

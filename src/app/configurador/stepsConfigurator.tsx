@@ -1,5 +1,5 @@
 'use client'
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import WindowSizeSelector from './windowsSizeSelector'
 import WindowTypeSelector from './windowTypeSelector'
 import LocationSelector from './locationSelector'
@@ -11,30 +11,74 @@ import Summary from './summary'
 import { IoLocation } from 'react-icons/io5'
 import { BiLogoWindows } from 'react-icons/bi'
 import { CgSize } from 'react-icons/cg'
-import { MdPayment } from 'react-icons/md'
+import { MdPayment, MdSummarize } from 'react-icons/md'
+import { useScrollToSection } from '@/hooks/useScrollToSection'
+import FloatingLink from '@/components/FloatingLink'
 
 type ConfiguratorPageProps = {
-  colonia: string
+  nameDelegation: string
   windowSize: string
   windowType: string
   paymentType: string
 }
 
-export default function ConfiguratorPage({ colonia, windowSize, windowType, paymentType }: ConfiguratorPageProps) {
+export default function ConfiguratorPage({
+  nameDelegation,
+  windowSize,
+  windowType,
+  paymentType
+}: ConfiguratorPageProps) {
   const router = useRouter()
+  const [coloniaIsValid, setColoniaIsValid] = useState(false)
+
+  // Referencias para cada sección de paso
+  const locationRef = useRef<HTMLDivElement>(null)
+  const windowTypeRef = useRef<HTMLDivElement>(null)
+  const windowSizeRef = useRef<HTMLDivElement>(null)
+  const paymentTypeRef = useRef<HTMLDivElement>(null)
+  const summaryRef = useRef<HTMLDivElement>(null)
 
   const currentStep = useMemo(() => {
     let count = 0
-    if (colonia) count++
+    if (nameDelegation) count++
     if (windowType) count++
     if (windowSize) count++
     if (paymentType) count++
     return count
-  }, [colonia, windowType, windowSize, paymentType])
+  }, [nameDelegation, windowType, windowSize, paymentType])
 
-  const updateUrl = (newColonia: string, newWindowType: string, newWindowSize: string, newPaymentType: string) => {
+  // Efecto para desplazarse automáticamente a la sección correspondiente cuando cambia el paso
+  useEffect(() => {
+    const scrollToSection = () => {
+      if (currentStep === 0) {
+        locationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } else if (currentStep === 1 && windowTypeRef.current) {
+        windowTypeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } else if (currentStep === 2 && windowSizeRef.current) {
+        windowSizeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } else if (currentStep === 3 && paymentTypeRef.current) {
+        paymentTypeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } else if (currentStep === 4 && summaryRef.current) {
+        summaryRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
+
+    // Pequeño retraso para asegurar que los componentes estén renderizados
+    const timer = setTimeout(() => {
+      scrollToSection()
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [currentStep])
+
+  const updateUrl = (
+    newNameDelegation: string,
+    newWindowType: string,
+    newWindowSize: string,
+    newPaymentType: string
+  ) => {
     const params = new URLSearchParams({
-      colonia: newColonia || '',
+      nameDelegation: newNameDelegation || '',
       windowType: newWindowType || '',
       windowSize: newWindowSize || '',
       paymentType: newPaymentType || ''
@@ -42,8 +86,21 @@ export default function ConfiguratorPage({ colonia, windowSize, windowType, paym
     router.replace(`/configurador?${params.toString()}`, { scroll: false })
   }
 
+  // Determinar si se debe mostrar el enlace flotante al resumen
+  const shouldShowFloatingLink = windowSize && windowType && coloniaIsValid && paymentType
+
   return (
     <>
+      {/* Enlace flotante al resumen */}
+      {shouldShowFloatingLink && (
+        <FloatingLink
+          targetRef={summaryRef}
+          label={`Total ${paymentType === 'financiacion' ? '$ 10.999' : '$ 9.999'} MXN, ir a pagar`}
+          icon={<MdSummarize className="mr-2" />}
+          position="bottom-left"
+        />
+      )}
+
       <div className="w-full flex items-center justify-center px-[10%] md:px-[20%]">
         <ol className="w-full flex  mb-4 sm:mb-5">
           <li
@@ -119,66 +176,79 @@ export default function ConfiguratorPage({ colonia, windowSize, windowType, paym
         </ol>
       </div>
 
-      {!colonia && (
+      <div className="container flex flex-col items-center px-4 md:px-0 mx-auto max-w-screen-xl text-center lg:pt-4 z-10 relative">
+        <h1 className="mb-4 text-2xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+          Configuración
+        </h1>
+        <div className="w-full md:w-1/2" ref={locationRef}>
+          {/* Selector de Ubicación */}
+          <LocationSelector
+            onValidLocation={(nameDelegation: string) => {
+              // move scroll to windowTypeRef
+              windowTypeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              updateUrl(nameDelegation, windowType, windowSize, paymentType)
+            }}
+            value={nameDelegation}
+            setColoniaIsValid={setColoniaIsValid}
+          />
+        </div>
+      </div>
+      {!coloniaIsValid && nameDelegation && (
         <div className="container flex flex-col items-center px-4 md:px-0 mx-auto max-w-screen-xl text-center lg:pt-4 z-10 relative">
-          <h1 className="mb-4 text-2xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-            Configuración
-          </h1>
           <p className="mb-8 text-md md:text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-200">
-            En Freddo trabajamos por expandir nuestros servicios a más colonias, por ahora solo estamos sirviendo a las
-            siguientes delegaciones en la Ciudad de México:
+            En Freddo trabajamos por expandir nuestros servicios a más colonias, pronto estaremos en tu colonia
           </p>
-          <div className="w-full md:w-1/2">
-            {/* Selector de Ubicación */}
-            <LocationSelector
-              onValidLocation={(colonia: string) => {
-                updateUrl(colonia, windowType, windowSize, paymentType)
-              }}
-              value={colonia}
-            />
-          </div>
         </div>
       )}
       <div className="w-full flex flex-col md:flex-row lg:px-0 flex-wrap gap-4 overflow-auto p-4">
         <ScrollArea className="w-full flex flex-1">
-          {colonia && (
-            <div className="w-full">
-              <LocationSelector
-                onValidLocation={(colonia: string) => {
-                  updateUrl(colonia, windowType, windowSize, paymentType)
+          <section className="w-full flex flex-col gap-4" ref={windowTypeRef}>
+            {nameDelegation && coloniaIsValid && (
+              <WindowTypeSelector
+                selectedType={windowType}
+                onSelect={(type) => {
+                  // move scroll to windowSizeRef
+                  windowSizeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  updateUrl(nameDelegation, type, windowSize, paymentType)
                 }}
-                value={colonia}
               />
-            </div>
-          )}
-          {colonia && (
-            <WindowTypeSelector
-              selectedType={windowType}
-              onSelect={(type) => {
-                updateUrl(colonia, type, windowSize, paymentType)
-              }}
-            />
-          )}
-          {windowType && (
-            <WindowSizeSelector
-              selectedSize={windowSize}
-              onSelect={(size) => {
-                updateUrl(colonia, windowType, size, paymentType)
-              }}
-            />
-          )}
-          {colonia && windowSize && windowType && (
-            <PaymentTypeSelector
-              selectedType={paymentType}
-              onPaymentTypeSelect={(type) => {
-                updateUrl(colonia, windowType, windowSize, type)
-              }}
-            />
-          )}
+            )}
+          </section>
+          <section className="w-full flex flex-col gap-4" ref={windowSizeRef}>
+            {windowType && coloniaIsValid && (
+              <WindowSizeSelector
+                selectedSize={windowSize}
+                onSelect={(size) => {
+                  // move scroll to paymentTypeRef
+                  paymentTypeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  updateUrl(nameDelegation, windowType, size, paymentType)
+                }}
+              />
+            )}
+          </section>
+          <section className="w-full flex flex-col gap-4" ref={paymentTypeRef}>
+            {nameDelegation && windowSize && windowType && coloniaIsValid && (
+              <PaymentTypeSelector
+                selectedType={paymentType}
+                onPaymentTypeSelect={(type) => {
+                  // move scroll to summaryRef
+                  summaryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  updateUrl(nameDelegation, windowType, windowSize, type)
+                }}
+              />
+            )}
+          </section>
         </ScrollArea>
-        {windowSize && windowType && (
-          <Summary colonia={colonia} windowSize={windowSize} windowType={windowType} paymentType={paymentType} />
-        )}
+        <section className="w-full flex flex-col gap-4" ref={summaryRef}>
+          {windowSize && windowType && coloniaIsValid && (
+            <Summary
+              nameDelegation={nameDelegation}
+              windowSize={windowSize}
+              windowType={windowType}
+              paymentType={paymentType}
+            />
+          )}
+        </section>
       </div>
     </>
   )

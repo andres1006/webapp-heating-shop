@@ -9,7 +9,7 @@ const UserForm = () => {
       <h2 className=" w-full text-xl font-semibold mb-4">Datos del Usuario</h2>
       <div className="mb-4">
         <label className="block text-gray-700">Correo Electrónico</label>
-        <Input type="email" placeholder="example@example.com" required {...register('email')} />
+        <Input type="email" placeholder="example@example.com" {...register('email')} />
       </div>
     </>
   )

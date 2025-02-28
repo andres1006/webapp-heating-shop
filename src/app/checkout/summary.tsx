@@ -8,27 +8,33 @@ interface SummaryProps {
   windowSize: string | null
   windowType: string | null
   paymentType: string | null
-  colonia: string | null
+  nameDelegation: string | null
   showButtonToPay?: boolean
 }
 
-const Summary: FC<SummaryProps> = ({ colonia, windowSize, windowType, paymentType, showButtonToPay = false }) => {
+const Summary: FC<SummaryProps> = ({
+  nameDelegation,
+  windowSize,
+  windowType,
+  paymentType,
+  showButtonToPay = false
+}) => {
   const params = new URLSearchParams({
-    colonia: colonia || '',
+    nameDelegation: nameDelegation || '',
     windowType: windowType || '',
     windowSize: windowSize || '',
     paymentType: paymentType || ''
   })
 
-  const canUserDoBuy = !windowSize || !windowType || !paymentType || !colonia
+  const canUserDoBuy = !windowSize || !windowType || !paymentType || !nameDelegation
 
   return (
     <div className="flex flex-1 p-4 flex-col py-3 w-full rounded-lg bg-gray-50 gap-4">
       <h2 className="text-xl font-semibold mb-4 text-center">Resumen de Configuración</h2>
       <div className="flex flex-col gap-2">
         <p className="text-sm capitalize gap-2 flex items-center">
-          <strong className="lowercase first-letter:capitalize">Colonia:</strong>
-          {colonia || 'No seleccionado'}
+          <strong className="lowercase first-letter:capitalize">Delegación:</strong>
+          {nameDelegation || 'No seleccionado'}
         </p>
         <p className="text-sm capitalize gap-2 flex items-center">
           <strong className="lowercase first-letter:capitalize">Tamaño de la ventana:</strong>
