@@ -14,12 +14,12 @@ const types = [
     image: '/assets/window-types/1.png',
     imageHover: '/assets/window-types/2.png'
   },
-  {
+  /*   {
     label: 'Abatible',
     value: 'abatible',
     image: '/assets/window-types/4.png',
     imageHover: '/assets/window-types/6.png'
-  },
+  }, */
   {
     label: 'Corrediza',
     value: 'corrediza',

@@ -14,7 +14,7 @@ import { CgSize } from 'react-icons/cg'
 import { MdPayment, MdSummarize } from 'react-icons/md'
 import { useScrollToSection } from '@/hooks/useScrollToSection'
 import FloatingLink from '@/components/FloatingLink'
-
+import { addDelegationAndAddClisk } from '@/app/api/actions/delegations'
 type ConfiguratorPageProps = {
   nameDelegation: string
   windowSize: string
@@ -29,7 +29,7 @@ export default function ConfiguratorPage({
   paymentType
 }: ConfiguratorPageProps) {
   const router = useRouter()
-  const [coloniaIsValid, setColoniaIsValid] = useState(false)
+  const [coloniaIsValid, setColoniaIsValid] = useState(!!nameDelegation || false)
 
   // Referencias para cada sección de paso
   const locationRef = useRef<HTMLDivElement>(null)
@@ -86,6 +86,13 @@ export default function ConfiguratorPage({
     router.replace(`/configurador?${params.toString()}`, { scroll: false })
   }
 
+  const addclickDelegation = async (nameDelegation: string) => {
+    const { error, status } = await addDelegationAndAddClisk(nameDelegation)
+    if (error) {
+      console.error(error)
+    }
+  }
+
   // Determinar si se debe mostrar el enlace flotante al resumen
   const shouldShowFloatingLink = windowSize && windowType && coloniaIsValid && paymentType
 
@@ -96,7 +103,6 @@ export default function ConfiguratorPage({
         <FloatingLink
           targetRef={summaryRef}
           label={`Total ${paymentType === 'financiacion' ? '$ 10.999' : '$ 9.999'} MXN, ir a pagar`}
-          icon={<MdSummarize className="mr-2" />}
           position="bottom-left"
         />
       )}
@@ -187,6 +193,7 @@ export default function ConfiguratorPage({
               // move scroll to windowTypeRef
               windowTypeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
               updateUrl(nameDelegation, windowType, windowSize, paymentType)
+              addclickDelegation(nameDelegation)
             }}
             value={nameDelegation}
             setColoniaIsValid={setColoniaIsValid}

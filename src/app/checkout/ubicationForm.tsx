@@ -22,7 +22,7 @@ const UbicationForm: FC<UbicationFormProps> = () => {
       </div>
       <div className="mb-4">
         <label className="block text-gray-700">Delegación</label>
-        <Input type="text" placeholder="Colonia" required {...register('nameDelegation')} />
+        <Input type="text" placeholder="Colonia" required disabled {...register('nameDelegation')} />
       </div>
       <div className="mb-4">
         <label className="block text-gray-700">Colonia</label>

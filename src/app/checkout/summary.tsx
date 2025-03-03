@@ -10,6 +10,7 @@ interface SummaryProps {
   paymentType: string | null
   nameDelegation: string | null
   showButtonToPay?: boolean
+  isLoading?: boolean
 }
 
 const Summary: FC<SummaryProps> = ({
@@ -17,7 +18,8 @@ const Summary: FC<SummaryProps> = ({
   windowSize,
   windowType,
   paymentType,
-  showButtonToPay = false
+  showButtonToPay = false,
+  isLoading = false
 }) => {
   const params = new URLSearchParams({
     nameDelegation: nameDelegation || '',
@@ -66,7 +68,7 @@ const Summary: FC<SummaryProps> = ({
                 disabled={canUserDoBuy}
                 className=" w-full md:block md:w-full px-4  py-2 rounded bg-green-600 text-white hover:bg-green-700"
               >
-                Proceder a la Compra
+                {isLoading ? 'Procesando...' : 'Proceder a la Compra'}
               </Button>
             </Link>
           </div>

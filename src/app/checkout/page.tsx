@@ -33,7 +33,7 @@ const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
   return (
     <div className="container mx-auto pt-20 px-4">
       <StepsPage
-        user={data?.user}
+        initUser={data?.user}
         nameDelegation={searchParams?.nameDelegation || ''}
         windowType={searchParams?.windowType || ''}
         windowSize={searchParams?.windowSize || ''}

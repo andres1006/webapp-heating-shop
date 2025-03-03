@@ -4,11 +4,22 @@ import { createClient } from '@/utils/supabase/server'
 
 const CODE_USER = '2otWQNGlaK7gOlVMvInQywDUpkvLEheSNUylkADlsCVS4K206y'
 
-export const Signup = async ({ email }: { email: string }) => {
+export const Signup = async ({ email, signOut = false }: { email: string, signOut?: boolean }) => {
   try {
 
     console.log('email', email)
     const supabase = await createClient()
+
+    // close session
+    if (signOut) {
+      await supabase.auth.signOut()
+      return {
+        code: 'SIGN_OUT',
+        data: null,
+        error: null
+      }
+    }
+
     const { data: existingUser } = await supabase.auth.signInWithPassword({
       email,
       password: CODE_USER
@@ -16,19 +27,12 @@ export const Signup = async ({ email }: { email: string }) => {
 
     console.log('existingUser', existingUser)
     if (existingUser.user) {
-      // await supabase.auth.updateUser({
-      //   data: {
-      //     username: 'John Agudelo',
-      //     phone: '3178675309',
-      //     ciudad: 'Manizales'
-      //   }
-      // })
 
       console.log('updatedUser', existingUser)
 
       // User already exists, handle accordingly
       return {
-        code: 'USER_EXISTS',
+        code: 'USER_SESSION',
         data: existingUser,
         error: {
           message: 'User already exists. Please sign in instead.'
@@ -47,7 +51,7 @@ export const Signup = async ({ email }: { email: string }) => {
     console.log('data', data)
 
     return {
-      code: 'CONFIRM_EMAIL',
+      code: 'USER_SESSION',
       data,
       error
     }

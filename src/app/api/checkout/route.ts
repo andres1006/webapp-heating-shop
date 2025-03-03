@@ -5,7 +5,6 @@ import { NextResponse } from 'next/server'
 import {
   APLICATION_ID_ONE_SIGNAL,
   emailSoporteFreddo,
-  KEY_ONE_SIGNAL,
   PRICE_INSTALLATION_CONTADO,
   PRICE_INSTALLATION_FINANCIADO
 } from '@/constants'
@@ -61,6 +60,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === 'POST') {
     try {
+      // Generar un ID único para este pedido que usaremos como external_reference
+      const orderClientId = uuidv4()
+
       const preference = await new Preference(mercadopago).create({
         body: {
           items: [
@@ -88,13 +90,21 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
           payment_methods: {
             installments: 12 // Número máximo de cuotas permitidas
           },
-          notification_url: `${process.env.NEXT_PUBLIC_URL}/api/checkout/notification`
+          // Usar el ID único como external_reference para poder identificar este pedido en las notificaciones
+          external_reference: orderClientId,
+          // Actualizar la URL de notificación para usar nuestro nuevo webhook
+          notification_url: `${process.env.NEXT_PUBLIC_URL}/api/webhook/mercadopago`
         }
       })
 
       /* const response = await sendNotification() */
       console.log('preference', preference)
-      return NextResponse.json({ init_point: preference.init_point, client_id: preference.client_id })
+
+      // Devolver el client_id generado por nosotros, no el de la preferencia
+      return NextResponse.json({
+        init_point: preference.init_point,
+        client_id: orderClientId
+      })
     } catch (error) {
       console.error('Error al crear la preferencia de pago:', error)
       return NextResponse.json({ error: 'Error al crear la preferencia de pago' })
