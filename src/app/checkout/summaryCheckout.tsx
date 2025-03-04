@@ -171,7 +171,9 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
 
         if (!response.ok) {
           const errorData = await response.json()
-          throw new Error(errorData.error || 'Error al procesar el pago')
+          toast.error(errorData.error || 'Error al procesar el pago. Por favor, intenta nuevamente.')
+          setIsLoading(false)
+          return
         }
 
         const data = await response.json()
@@ -210,6 +212,7 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
 
           if (productError) {
             console.error('Error al crear el producto:', productError)
+            toast.error('El usuario ya tiene un producto pendiente. Por favor, intenta nuevamente.')
             setIsLoading(false)
             return
           }
@@ -438,7 +441,7 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
                   <UbicationForm />
                   <div className="flex gap-2">
                     <Button type="submit" disabled={!isValid}>
-                      Ir a pagar
+                      {isLoading ? 'Procesando...' : 'Ir a pagar'}
                     </Button>
                   </div>
                   {/* validate object empty */}

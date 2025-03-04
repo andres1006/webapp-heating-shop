@@ -49,7 +49,7 @@ const Summary: FC<SummaryProps> = ({ nameDelegation, windowSize, windowType, pay
         </p>
         <p className="text-2xl font-semibold capitalize gap-2 flex justify-center mt-5">
           <strong className="lowercase first-letter:capitalize">Total:</strong>
-          {paymentType === 'financiacion' ? '$ 13.999' : '$ 12.999'} MXN
+          {paymentType === 'financiacion' ? '$ 1.083 MXN Mensuales' : '$ 11.999 MXN un solo pago'}
         </p>
       </div>
       <Separator />
