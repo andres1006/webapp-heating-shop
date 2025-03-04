@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
         console.log('Notificación recibida de Mercado Pago:', body)
 
         try {
-            await fetch(`https://hook.us2.make.com/e45u7bqfw9io2p4530ow2shmasmp2pk2`, {
+            await fetch(`https://hook.us2.make.com/wojnq7c86bhbwo576gvz7g0fjf31v5ze`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
