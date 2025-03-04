@@ -21,7 +21,7 @@ const services: Service[] = [
   {
     title: 'Mantenimiento Periódico',
     description:
-      'Ofrecemos planes de mantenimiento cada 6 meses para garantizar que tu equipo funcione de manera eficiente y prolongar su vida útil.',
+      'Ofrecemos planes de mantenimiento cada 12 meses para garantizar que tu equipo funcione de manera eficiente y prolongar su vida útil.',
     icon: <FaSyncAlt size={40} color="#4A90E2" />
   },
   {
