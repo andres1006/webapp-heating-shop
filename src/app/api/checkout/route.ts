@@ -15,7 +15,7 @@ const PUBLIC_APP_USR = 'APP_USR-c6ae916f-2116-460e-a92b-bdb05d79630f'
 // Micke
 //const ACCESS_TOKEN = 'APP_USR-7917833599682123-121021-f43531d4b7864edde3be7beb8ed22a77-122889697'
 // Pipe
-const ACCESS_TOKEN = 'APP_USR-5065090835942230-010822-4a4d9911d4bb86a3fdb6590869108666-308042976'
+//const ACCESS_TOKEN = 'APP_USR-5065090835942230-010822-4a4d9911d4bb86a3fdb6590869108666-308042976'
 const PUBLIC_KEY = 'APP_USR-078dd8e0-437a-4bc2-b81e-3fb0e8fd5f0c'
 const CLIENT_ID = '7917833599682123'
 const CLIENT_SECRET = 'LAdObjRazoj0C6NtSVO9c6oJckEhRORL'
@@ -27,7 +27,7 @@ const descriptionMessage = {
 }
 
 // Configura el SDK de MercadoPago
-export const mercadopago = new MercadoPagoConfig({ accessToken: ACCESS_TOKEN })
+export const mercadopago = new MercadoPagoConfig({ accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN || '' })
 
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
   // accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN || ''
