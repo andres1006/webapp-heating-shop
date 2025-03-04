@@ -52,7 +52,7 @@ const Summary: FC<SummaryProps> = ({
         </p>
         <p className="text-2xl font-semibold capitalize gap-2 flex justify-center mt-5">
           <strong className="lowercase first-letter:capitalize">Total:</strong>
-          {paymentType === 'financiacion' ? '$ 11.999 MXN' : '$ 1.999 MXN MENSUAL'}
+          {paymentType === 'financiacion' ? '$ 1.083 MXN Mensuales' : '$ 11.999 MXN'}
         </p>
       </div>
       {showButtonToPay && (
@@ -61,7 +61,7 @@ const Summary: FC<SummaryProps> = ({
           <div className="md:hidden rounded-lg bg-white p-2 fixed bottom-5 left-1/2 -translate-x-1/2 flex flex-col md:flex-row items-center justify-center gap-2">
             <p className=" md:hidden text-sm font-semibold capitalize gap-2 flex justify-center">
               <strong className="lowercase first-letter:capitalize">Total:</strong>
-              {paymentType === 'financiacion' ? '$ 11.999 MXN' : '$ 1.999 MXN MENSUAL'}
+              {paymentType === 'financiacion' ? '$ 1.083 MXN Mensuales' : '$ 11.999 MXN'}
             </p>
             <Link href={`/checkout?${params.toString()}`}>
               <Button
