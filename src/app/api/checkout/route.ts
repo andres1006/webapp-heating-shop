@@ -49,7 +49,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const email = cookies?._parsed?.get('email')?.value || ''
   const name = cookies?._parsed?.get('name')?.value || ''
   const phone = cookies?._parsed?.get('phone')?.value || ''
-  const totalAmount = paymentType === 'financiacion' ? PRICE_INSTALLATION_FINANCIADO : PRICE_INSTALLATION_CONTADO
+  const totalAmount = paymentType === 'financiacion' ? 12999 : PRICE_INSTALLATION_CONTADO
 
   if (colonia === '' || windowType === '' || windowSize === '' || paymentType === '') {
     return NextResponse.json({ error: 'Datos incompletos' })

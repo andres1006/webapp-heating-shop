@@ -202,7 +202,7 @@ export default function ConfiguratorPage({
       {!coloniaIsValid && nameDelegation && (
         <div className="container flex flex-col items-center px-4 md:px-0 mx-auto max-w-screen-xl text-center lg:pt-4 z-10 relative">
           <p className="mb-8 text-md md:text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-200">
-            En Freddo trabajamos por expandir nuestros servicios a más colonias, pronto estaremos en tu colonia
+            En Freddo trabajamos por expandir nuestros servicios a más delegaciones, pronto estaremos en tu delegación
           </p>
         </div>
       )}

@@ -58,7 +58,7 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
   const router = useRouter()
 
   // Calcular el monto total basado en el tipo de pago
-  const totalAmount = paymentType === 'financiacion' ? 10999 : 9999
+  const totalAmount = paymentType === 'financiacion' ? 12999 : 11999
 
   // Referencias para las secciones de pasos
   const stepSectionRef = useRef<HTMLDivElement>(null)
@@ -198,7 +198,7 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
             windowType,
             windowSize,
             paymentType,
-            price: totalAmount,
+            price: paymentType === 'financiacion' ? 12999 : 11999,
             status: 'pending',
             link_payment: data.init_point,
             Id_user: user.id,
@@ -210,26 +210,6 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
 
           if (productError) {
             console.error('Error al crear el producto:', productError)
-
-            // Verificar si es un error de RLS y proporcionar un mensaje más claro
-            if (
-              productError &&
-              typeof productError === 'object' &&
-              'code' in productError &&
-              productError.code === 'PGRST301'
-            ) {
-              toast.error(
-                'Error de permisos: No tienes permisos para crear un producto. Por favor, contacta a soporte.'
-              )
-            } else {
-              // Mensaje de error general
-              toast.error(
-                productError && typeof productError === 'object' && 'message' in productError
-                  ? productError.message
-                  : 'No se pudo registrar el producto. Por favor, intenta nuevamente.'
-              )
-            }
-
             setIsLoading(false)
             return
           }
