@@ -106,7 +106,7 @@ const Header = () => {
                 <Link href="/configurador">
                   <p
                     onClick={closeSidebar}
-                    className="block mx-4 px-4 py-2 text-lg font-medium rounded-md text-center bg-blue-300 text-white hover:bg-blue-400"
+                    className="block mx-4 px-4 py-2 text-lg font-medium rounded-md text-center bg-blue-400 text-white hover:bg-blue-500"
                   >
                     Contrata ahora
                   </p>

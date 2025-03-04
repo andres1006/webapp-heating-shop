@@ -48,7 +48,7 @@ const Contact = () => {
               <div className="text-4xl text-blue-400 mb-4">
                 <FaPhone />
               </div>
-              <p className="text-lg font-medium">Llámanos al {phone}</p>
+              <p className="text-lg font-medium">Escribenos al whatsapp {phone}</p>
             </Link>
             <button
               onClick={() => setShowForm(true)}

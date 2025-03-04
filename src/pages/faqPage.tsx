@@ -12,7 +12,7 @@ const faqs = [
     id: 2,
     question: '¿Qué tipos de pago aceptan?',
     answer:
-      'Aceptamos pagos con tarjeta de crédito, débito, transferencias bancarias y pagos en efectivo. También ofrecemos opciones de financiamiento para facilitar su compra.'
+      'Aceptamos pagos con tarjeta de crédito, débito, transferencias bancarias. También ofrecemos opciones de financiamiento para facilitar su compra.'
   },
   {
     id: 3,
@@ -30,7 +30,7 @@ const faqs = [
     id: 5,
     question: '¿Cómo puedo rastrear el estado de mi pedido?',
     answer:
-      'Puede rastrear el estado de su pedido iniciando sesión en su cuenta en nuestro sitio web. También recibirá actualizaciones por correo electrónico en cada etapa del proceso.'
+      'Puede rastrear el estado de su pedido mediante la linea de atención de whatsapp +1 (832) 282‑5365. También recibirá actualizaciones por correo electrónico en cada etapa del proceso.'
   },
   {
     id: 6,
@@ -42,19 +42,13 @@ const faqs = [
     id: 7,
     question: '¿Ofrecen servicios de mantenimiento?',
     answer:
-      'Sí, ofrecemos servicios de mantenimiento para asegurar que su producto funcione correctamente a lo largo del tiempo. Puede programar una cita de mantenimiento a través de nuestro sitio web o contactándonos directamente.'
-  },
-  {
-    id: 8,
-    question: '¿Qué sucede si no estoy satisfecho con el producto?',
-    answer:
-      'Si no está satisfecho con el producto, ofrecemos una política de devolución de 30 días. Por favor, contáctenos para iniciar el proceso de devolución o cambio.'
+      'Sí, El servicio del primer año esta incluido en el precio del producto. Posteriormente, ofrecemos servicios de mantenimiento para asegurar que su producto funcione correctamente a lo largo del tiempo. Puede programar una cita de mantenimiento a través de nuestro sitio web o contactándonos directamente.'
   },
   {
     id: 9,
     question: '¿Cómo puedo contactar al servicio al cliente?',
     answer:
-      'Puede contactarnos a través de nuestro formulario de contacto en el sitio web, por correo electrónico a soporte@ejemplo.com, o llamando a nuestro número de atención al cliente al +1 (832) 282‑5365.'
+      'Puede contactarnos a través de nuestro formulario de contacto en el sitio web, por correo electrónico a info@freddoair.com o por la linea de atencion de nuestro whatsapp +1 (832) 282‑5365.'
   },
   {
     id: 10,

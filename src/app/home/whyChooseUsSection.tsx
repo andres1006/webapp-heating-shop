@@ -12,7 +12,7 @@ const benefits = [
     image: '/assets/img-3.png'
   },
   {
-    title: 'Mantenimiento Cada 6 Meses',
+    title: 'Mantenimiento Cada 12 Meses',
     description: 'Olvídate de programaciones, nosotros te contactamos.',
     icon: <FaSyncAlt size={40} />,
     image: '/assets/img-4.png'
