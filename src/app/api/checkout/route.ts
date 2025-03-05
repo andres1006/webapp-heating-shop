@@ -29,11 +29,11 @@ const descriptionMessage = {
 // Configura el SDK de MercadoPago
 export const mercadopago = new MercadoPagoConfig({ accessToken: ACCESS_TOKEN || '' })
 
-export async function POST(req: Request) {
+export async function POST(req: NextApiRequest, res: NextApiResponse) {
   // accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN || ''
 
   // recive data to body request
-  const body = await req.json()
+  const body = await req.body
   console.log('body', body)
 
   // get user session from request
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
   } = await supabase.auth.getUser()
 
   // get cookies from request
-  const cookies: any = body.cookies
+  const cookies: any = req.cookies
 
   // read cookies
   const colonia = cookies?._parsed?.get('colonia')?.value || ''
