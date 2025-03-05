@@ -84,7 +84,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
           back_urls: {
             success: `${process.env.NEXT_PUBLIC_URL}/success`,
             failure: `${process.env.NEXT_PUBLIC_URL}/failure`,
-            pending: `${process.env.NEXT_PUBLIC_URL}/pending`
+            pending: `${process.env.NEXT_PUBLIC_URL}/pending`,
           },
           auto_return: 'approved',
           payment_methods: {

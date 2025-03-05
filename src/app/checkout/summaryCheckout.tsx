@@ -176,18 +176,24 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
           return
         }
 
-        const data = await response.json()
-        console.log('Respuesta del checkout:', data)
-
-        // Guardar el client_id para referencia futura y tracking
-        if (data.client_id) {
-          localStorage.setItem('mp_client_id', data.client_id)
-          console.log('Client ID guardado:', data.client_id)
-        }
-
-        // Crear el producto en la base de datos
         try {
-          console.log('Creando producto con client_id:', data.client_id)
+          const data = await response.json()
+          console.log('Respuesta del checkout:', data)
+
+          // Guardar el client_id para referencia futura y tracking
+          if (data.orderClientId) {
+            localStorage.setItem('mp_client_id', data.orderClientId)
+            console.log('Client ID guardado:', data.orderClientId)
+          }
+
+          if (!data?.init_point) {
+            toast.error('No se pudo procesar el pago. Por favor, intenta nuevamente.')
+            setIsLoading(false)
+            return
+          }
+
+          // Crear el producto en la base de datos
+          console.log('Creando producto con client_id:', data.orderClientId)
 
           // Asegurarnos de que el ID de usuario no sea undefined
           if (!user?.id) {
