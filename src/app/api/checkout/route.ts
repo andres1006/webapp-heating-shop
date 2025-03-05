@@ -46,9 +46,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const windowType = cookies?._parsed?.get('windowType')?.value || ''
   const windowSize = cookies?._parsed?.get('windowSize')?.value || ''
   const paymentType = cookies?._parsed?.get('paymentType')?.value || ''
-  const email = cookies?._parsed?.get('email')?.value || ''
-  const name = cookies?._parsed?.get('name')?.value || ''
-  const phone = cookies?._parsed?.get('phone')?.value || ''
   const totalAmount = paymentType === 'financiacion' ? 12999 : PRICE_INSTALLATION_CONTADO
 
   if (colonia === '' || windowType === '' || windowSize === '' || paymentType === '') {

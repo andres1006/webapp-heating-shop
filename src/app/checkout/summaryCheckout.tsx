@@ -163,6 +163,12 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
         return
       }
 
+      // save data in cookies
+      saveDataInCookie('nameDelegation', nameDelegation)
+      saveDataInCookie('windowType', windowType)
+      saveDataInCookie('windowSize', windowSize)
+      saveDataInCookie('paymentType', paymentType)
+
       // Procesar el pago
       try {
         const response = await fetch('/api/checkout', {
