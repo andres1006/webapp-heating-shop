@@ -187,7 +187,7 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
           }
 
           if (!data?.init_point) {
-            toast.error('No se pudo procesar el pago. Por favor, intenta nuevamente.')
+            toast.error('Error al generar link de pago. Por favor, intenta nuevamente.')
             setIsLoading(false)
             return
           }
