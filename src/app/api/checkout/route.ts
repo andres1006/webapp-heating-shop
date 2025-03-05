@@ -27,7 +27,7 @@ const descriptionMessage = {
 }
 
 // Configura el SDK de MercadoPago
-export const mercadopago = new MercadoPagoConfig({ accessToken: process.env.NEXT_PUBLIC_MERCADO_PAGO_ACCESS_TOKEN || ACCESS_TOKEN || '' })
+export const mercadopago = new MercadoPagoConfig({ accessToken: ACCESS_TOKEN || '' })
 
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
   // accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN || ''
