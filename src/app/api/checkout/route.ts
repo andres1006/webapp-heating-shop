@@ -46,14 +46,14 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const cookies: any = req.cookies
 
   // read cookies
-  const colonia = cookies?._parsed?.get('colonia')?.value || ''
+  const nameDelegation = cookies?._parsed?.get('nameDelegation')?.value || ''
   const windowType = cookies?._parsed?.get('windowType')?.value || ''
   const windowSize = cookies?._parsed?.get('windowSize')?.value || ''
   const paymentType = cookies?._parsed?.get('paymentType')?.value || ''
   const totalAmount = paymentType === 'financiacion' ? 12999 : PRICE_INSTALLATION_CONTADO
 
-  if (colonia === '' || windowType === '' || windowSize === '' || paymentType === '') {
-    return NextResponse.json({ error: 'Datos incompletos', body, colonia, windowType, windowSize, paymentType })
+  if (nameDelegation === '' || windowType === '' || windowSize === '' || paymentType === '') {
+    return NextResponse.json({ error: 'Datos incompletos', body, nameDelegation, windowType, windowSize, paymentType })
   }
 
   const description = descriptionMessage[windowType as keyof typeof descriptionMessage]
