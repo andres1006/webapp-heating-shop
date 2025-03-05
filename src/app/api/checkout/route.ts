@@ -29,8 +29,12 @@ const descriptionMessage = {
 // Configura el SDK de MercadoPago
 export const mercadopago = new MercadoPagoConfig({ accessToken: ACCESS_TOKEN || '' })
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: Request) {
   // accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN || ''
+
+  // recive data to body request
+  const body = await req.json()
+  console.log('body', body)
 
   // get user session from request
   const supabase = await createClient()
@@ -39,7 +43,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   } = await supabase.auth.getUser()
 
   // get cookies from request
-  const cookies: any = req.cookies
+  const cookies: any = body.cookies
 
   // read cookies
   const colonia = cookies?._parsed?.get('colonia')?.value || ''
@@ -49,7 +53,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const totalAmount = paymentType === 'financiacion' ? 12999 : PRICE_INSTALLATION_CONTADO
 
   if (colonia === '' || windowType === '' || windowSize === '' || paymentType === '') {
-    return NextResponse.json({ error: 'Datos incompletos' })
+    return NextResponse.json({ error: 'Datos incompletos', body, colonia, windowType, windowSize, paymentType })
   }
 
   const description = descriptionMessage[windowType as keyof typeof descriptionMessage]
