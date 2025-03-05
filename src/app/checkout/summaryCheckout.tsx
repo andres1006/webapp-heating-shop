@@ -22,6 +22,7 @@ import { createProduct } from '../api/actions/product'
 import { useSequentialScrollToSection } from '@/hooks/useScrollToSection'
 import FloatingLink from '@/components/FloatingLink'
 import toast from 'react-hot-toast'
+import { cookies } from 'next/headers'
 
 type OrderDetails = {
   nameDelegation: string
@@ -172,7 +173,14 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
       // Procesar el pago
       try {
         const response = await fetch('/api/checkout', {
-          method: 'POST'
+          method: 'POST',
+          body: JSON.stringify({
+            cookies: cookies(),
+            nameDelegation,
+            windowType,
+            windowSize,
+            paymentType
+          })
         })
 
         if (!response.ok) {
