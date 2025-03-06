@@ -101,7 +101,7 @@ export default function ConfiguratorPage({
       {shouldShowFloatingLink && (
         <FloatingLink
           targetRef={summaryRef}
-          label={`Total ${paymentType === 'financiacion' ? '$ 10.999' : '$ 9.999'} MXN, ir a pagar`}
+          label={`Total ${paymentType === 'financiacion' ? '$ 12.999' : '$ 11.999'} MXN, ir a pagar`}
           position="bottom-left"
         />
       )}
