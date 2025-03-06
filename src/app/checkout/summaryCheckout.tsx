@@ -303,7 +303,7 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
       {/* Enlace flotante al resumen */}
       <FloatingLink
         targetRef={summaryRef}
-        label={`Pagar: ${paymentType === 'financiacion' ? '$ 10.999' : '$ 9.999'} MXN`}
+        label={`Pagar: ${paymentType === 'financiacion' ? '$ 12.999' : '$ 11.999'} MXN`}
         icon={<CgPaypal className="mr-2" />}
         position="bottom-left"
       />

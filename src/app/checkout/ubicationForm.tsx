@@ -38,11 +38,11 @@ const UbicationForm: FC<UbicationFormProps> = () => {
       </div>
       <div className="mb-4">
         <label className="block text-gray-700">Numero interior</label>
-        <Input type="text" placeholder="123" required {...register('numberInt')} />
+        <Input type="text" placeholder="123" {...register('numberInt')} />
       </div>
       <div className="mb-4">
         <label className="block text-gray-700">Referencia</label>
-        <Input type="text" placeholder="Referencia" required {...register('reference')} />
+        <Input type="text" placeholder="Referencia" {...register('reference')} />
       </div>
     </>
   )

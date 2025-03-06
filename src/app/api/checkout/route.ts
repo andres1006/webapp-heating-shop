@@ -50,6 +50,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const windowType = cookies?._parsed?.get('windowType')?.value || ''
   const windowSize = cookies?._parsed?.get('windowSize')?.value || ''
   const paymentType = cookies?._parsed?.get('paymentType')?.value || ''
+
   const totalAmount = paymentType === 'financiacion' ? 12999 : PRICE_INSTALLATION_CONTADO
 
   if (nameDelegation === '' || windowType === '' || windowSize === '' || paymentType === '') {
