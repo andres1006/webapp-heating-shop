@@ -35,7 +35,8 @@ const Summary: FC<SummaryProps> = ({ nameDelegation, windowSize, windowType, pay
         <p className="text-sm capitalize gap-2 flex items-center">
           <strong className="lowercase first-letter:capitalize truncate">Tamaño de la ventana:</strong>
           <span className="truncate">
-            {windowSize || 'No seleccionado'} ( {dimensions[windowSize as keyof typeof dimensions] || 'No seleccionado'}{' '}
+            ({windowSize || 'No seleccionado'}) (
+            {dimensions[windowSize as keyof typeof dimensions] || 'No seleccionado'}){' '}
           </span>
         </p>
 

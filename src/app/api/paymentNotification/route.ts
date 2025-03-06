@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ ...body })
+        body: JSON.stringify({ ...body, payment_status: 'pending' })
       })
     } catch (error) {
       console.error('Error al enviar la notificación a Make:', error)
