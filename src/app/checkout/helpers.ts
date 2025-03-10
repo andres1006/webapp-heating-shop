@@ -12,5 +12,5 @@ export const handleSubmit = (state: any, payload: FormData) => {
     numberInt: payload.get('numberInt') as string,
     reference: payload.get('reference') as string
   }
-  console.log(data)
+  
 }

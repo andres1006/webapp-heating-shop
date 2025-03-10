@@ -10,6 +10,12 @@ export interface User {
   phone?: string
   status: string
   created_at: string
+  street?: string
+  numberExt?: string
+  numberInt?: string
+  reference?: string
+  nameColonia?: string
+  nameDelegation?: string
 }
 
 export interface Service {
@@ -89,7 +95,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       res.status(200).json({ service: serviceData, payment: paymentData })
     } catch (error) {
-      console.error('Error al crear el servicio y el pago:', error)
+      
       res.status(500).json({ error: 'Error al crear el servicio y el pago' })
     }
   } else {

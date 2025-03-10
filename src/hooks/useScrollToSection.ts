@@ -1,85 +1,76 @@
 import { useEffect, RefObject } from 'react'
 
-type ScrollOptions = {
+interface ScrollOptions {
     behavior?: ScrollBehavior
     block?: ScrollLogicalPosition
+    inline?: ScrollLogicalPosition
     delay?: number
 }
 
 /**
- * Hook personalizado para manejar el desplazamiento automático a secciones
+ * Hook para desplazarse a una sección específica cuando cambia una dependencia
+ * @param ref - Referencia al elemento al que desplazarse
  * @param dependencies - Array de dependencias que activarán el desplazamiento
- * @param scrollMap - Mapa de condiciones y referencias a las que desplazarse
  * @param options - Opciones de desplazamiento
  */
 export function useScrollToSection(
-    dependencies: any[],
-    scrollMap: Array<{
-        condition: boolean
-        ref: RefObject<HTMLElement>
-    }>,
-    options: ScrollOptions = { behavior: 'smooth', block: 'center', delay: 100 }
+    ref: RefObject<HTMLElement>,
+    dependencies: any[] = [],
+    options: ScrollOptions = {}
 ): void {
     useEffect(() => {
-        const scrollToSection = () => {
-            // Encuentra la primera condición que se cumple
-            const targetSection = scrollMap.find(({ condition }) => condition)
+        if (!ref.current) return
 
-            if (targetSection?.ref.current) {
-                targetSection.ref.current.scrollIntoView({
-                    behavior: options.behavior,
-                    block: options.block
-                })
-            }
-        }
+        const {
+            behavior = 'smooth',
+            block = 'start',
+            inline = 'nearest',
+            delay = 100
+        } = options
 
         // Pequeño retraso para asegurar que los componentes estén renderizados
         const timer = setTimeout(() => {
-            scrollToSection()
-        }, options.delay || 100)
+            ref.current?.scrollIntoView({
+                behavior,
+                block,
+                inline
+            })
+        }, delay)
 
         return () => clearTimeout(timer)
     }, dependencies)
 }
 
 /**
- * Hook personalizado para manejar el desplazamiento secuencial a múltiples secciones
- * @param dependencies - Array de dependencias que activarán el desplazamiento
- * @param scrollSequence - Secuencia de referencias a las que desplazarse con sus respectivos retrasos
+ * Hook para desplazarse secuencialmente a través de secciones basado en un paso actual
+ * @param refs - Objeto con referencias a elementos por paso
+ * @param currentStep - Paso actual
  * @param options - Opciones de desplazamiento
  */
 export function useSequentialScrollToSection(
-    dependencies: any[],
-    scrollSequence: Array<{
-        condition: boolean
-        ref: RefObject<HTMLElement>
-        sequentialDelay?: number
-    }>,
-    options: ScrollOptions = { behavior: 'smooth', block: 'center', delay: 100 }
+    refs: Record<number, RefObject<HTMLElement>>,
+    currentStep: number,
+    options: ScrollOptions = {}
 ): void {
     useEffect(() => {
-        const scrollToSections = () => {
-            // Filtra las secciones cuyas condiciones se cumplen
-            const targetSections = scrollSequence.filter(({ condition }) => condition)
+        if (!refs[currentStep]?.current) return
 
-            // Desplázate a cada sección en secuencia
-            targetSections.forEach(({ ref, sequentialDelay = 300 }, index) => {
-                setTimeout(() => {
-                    if (ref.current) {
-                        ref.current.scrollIntoView({
-                            behavior: options.behavior,
-                            block: options.block
-                        })
-                    }
-                }, (options.delay || 100) + index * sequentialDelay)
-            })
-        }
+        const {
+            behavior = 'smooth',
+            block = 'start',
+            inline = 'nearest',
+            delay = 100
+        } = options
 
-        // Pequeño retraso inicial para asegurar que los componentes estén renderizados
+        // Pequeño retraso para asegurar que los componentes estén renderizados
         const timer = setTimeout(() => {
-            scrollToSections()
-        }, options.delay || 100)
+            refs[currentStep].current?.scrollIntoView({
+                behavior,
+                block,
+                inline
+            })
+        }, delay)
 
         return () => clearTimeout(timer)
-    }, dependencies)
+    }, [currentStep, refs])
 } 

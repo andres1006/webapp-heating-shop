@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef, useMemo } from 'react'
+import { useState, useRef, useMemo, useEffect } from 'react'
 import SubscriptionSummary from './orderSummary'
 import clsx from 'clsx'
 import { Button } from '@/components/ui/button'
@@ -15,21 +15,22 @@ import { BiLogoWindows } from 'react-icons/bi'
 import { CgPaypal, CgSize } from 'react-icons/cg'
 import { MdPayment, MdSummarize } from 'react-icons/md'
 import { getCookie, saveDataInCookie } from '@/lib/utils'
-import { Signup } from './signup'
 import { User } from '@supabase/supabase-js'
-import { updateUser } from '../api/actions/user'
+import { updateUser, createUserTable } from '../api/actions/user'
 import { createProduct } from '../api/actions/product'
 import { useSequentialScrollToSection } from '@/hooks/useScrollToSection'
 import FloatingLink from '@/components/FloatingLink'
 import toast from 'react-hot-toast'
 import { cookies } from 'next/headers'
+import { getPriceByPaymentOption, formatPrice } from '@/constants'
+import { setCookie, getCookie as getClientCookie, deleteCookie } from '@/utils/cookies'
+import { Signup } from './signup'
 
 type OrderDetails = {
   nameDelegation: string
   windowType: string
   windowSize: string
   paymentType: string
-  initUser: User | null
 }
 
 type FormDataLoginOrSignup = {
@@ -47,19 +48,35 @@ type FormData = {
   reference: string
 }
 
-export default function StepsPage({ nameDelegation, windowType, windowSize, paymentType, initUser }: OrderDetails) {
-  let user = useMemo(() => initUser, [initUser])
+// Tipo para el usuario de la tabla User
+interface UserData {
+  user_id: string
+  email: string
+  name?: string
+  phone?: string
+  street?: string
+  numberExt?: string
+  numberInt?: string
+  reference?: string
+  nameColonia?: string
+  nameDelegation?: string
+  role?: string
+}
+
+export default function StepsPage({ nameDelegation, windowType, windowSize, paymentType }: OrderDetails) {
+  const [userData, setUserData] = useState<UserData | null>(null)
   const [currentStep, setCurrentStep] = useState(6)
   const [loadingValidateEmail, setLoadingValidateEmail] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isLoginOrSignup, setIsLoginOrSignup] = useState<
     'CONFIRM_EMAIL' | 'USER_SESSION' | 'USER_VALIDATED' | 'INIT_SESSION'
-  >(user ? 'USER_SESSION' : 'INIT_SESSION')
+  >('INIT_SESSION')
   const totalSteps = 7
   const router = useRouter()
 
   // Calcular el monto total basado en el tipo de pago
-  const totalAmount = paymentType === 'financiacion' ? 12999 : 11999
+  const totalAmount = getPriceByPaymentOption(paymentType)
+  
 
   // Referencias para las secciones de pasos
   const stepSectionRef = useRef<HTMLDivElement>(null)
@@ -68,38 +85,29 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
   const loginFormRef = useRef<HTMLFormElement>(null)
   const summaryRef = useRef<HTMLDivElement>(null)
 
-  // Utilizar el hook personalizado para el desplazamiento secuencial
-  useSequentialScrollToSection(
-    [currentStep, isLoginOrSignup],
-    [
-      // Primero desplazarse a la sección de pasos
-      { condition: true, ref: stepSectionRef, sequentialDelay: 0 },
-      // Luego, dependiendo del paso actual, desplazarse a la sección específica
-      {
-        condition: currentStep === 6 && !!userFormRef.current,
-        ref: userFormRef,
-        sequentialDelay: 300
-      },
-      {
-        condition: currentStep === 7 && !!ubicationFormRef.current,
-        ref: ubicationFormRef,
-        sequentialDelay: 300
-      }
-    ],
-    { behavior: 'smooth', block: 'center', delay: 100 }
+  // Crear un objeto de referencias para el hook de desplazamiento
+  const sectionRefs = useMemo(
+    () => ({
+      6: userFormRef,
+      7: ubicationFormRef
+    }),
+    []
   )
+
+  // Utilizar el hook personalizado para el desplazamiento secuencial
+  useSequentialScrollToSection(sectionRefs, currentStep, { behavior: 'smooth', block: 'center', delay: 100 })
 
   const methods = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: user?.user_metadata?.name || '',
-      phone: user?.user_metadata?.phone || '',
-      nameDelegation: user?.user_metadata?.nameDelegation || nameDelegation || '',
-      nameColonia: user?.user_metadata?.nameColonia || '',
-      street: user?.user_metadata?.street || '',
-      numberExt: user?.user_metadata?.numberExt || '',
-      numberInt: user?.user_metadata?.numberInt || '',
-      reference: user?.user_metadata?.reference || ''
+      name: userData?.name || '',
+      phone: userData?.phone || '',
+      nameDelegation: userData?.nameDelegation || nameDelegation || '',
+      nameColonia: userData?.nameColonia || '',
+      street: userData?.street || '',
+      numberExt: userData?.numberExt || '',
+      numberInt: userData?.numberInt || '',
+      reference: userData?.reference || ''
     }
   })
   const {
@@ -110,7 +118,7 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
   const methodsLoginOrSignup = useForm<FormDataLoginOrSignup>({
     resolver: zodResolver(formSchemaLoginOrSignup),
     defaultValues: {
-      email: user?.email || ''
+      email: ''
     }
   })
   const {
@@ -144,9 +152,19 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
   const onSubmit = async (formData: FormData) => {
     setIsLoading(true)
 
+    
+    
     try {
-      // Actualizar información del usuario
+      if (!userData?.email) {
+        toast.error('No se ha identificado al usuario. Por favor, ingresa tu correo electrónico primero.')
+        setIsLoading(false)
+        return
+      }
+
+      // Actualizar información del usuario en la tabla User
       const { error: userUpdateError } = await updateUser({
+        user_id: userData?.user_id || '',
+        email: userData.email,
         name: formData.name,
         phone: formData.phone,
         street: formData.street,
@@ -158,94 +176,78 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
       })
 
       if (userUpdateError) {
-        console.error('Error al actualizar información del usuario:', userUpdateError)
+        
         toast.error('No se pudo actualizar la información del usuario. Por favor, intenta nuevamente.')
         setIsLoading(false)
         return
       }
 
-      // save data in cookies
+      // Guardar datos en cookies
       saveDataInCookie('nameDelegation', nameDelegation)
       saveDataInCookie('windowType', windowType)
       saveDataInCookie('windowSize', windowSize)
       saveDataInCookie('paymentType', paymentType)
 
-      // Procesar el pago
+      // Calcular el precio basado en el tipo de pago
+      const price = getPriceByPaymentOption(paymentType)
+
       try {
-        const response = await fetch('/api/checkout', {
-          method: 'POST'
+        // Crear el producto directamente sin pasar por el checkout
+        const productData = {
+          windowType,
+          windowSize,
+          paymentType,
+          price: price,
+          status: 'pending',
+          id_user_table: userData.user_id,
+          email: userData.email
+        }
+
+        
+
+        // Llamar a la API para crear el producto y generar el link de pago
+        const response = await fetch('/api/checkout/direct', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(productData)
         })
 
         if (!response.ok) {
           const errorData = await response.json()
+          
           toast.error(errorData.error || 'Error al procesar el pago. Por favor, intenta nuevamente.')
           setIsLoading(false)
           return
         }
 
-        try {
-          const data = await response.json()
-          console.log('Respuesta del checkout:', data)
+        const data = await response.json()
+        
 
-          // Guardar el client_id para referencia futura y tracking
-          if (data.orderClientId) {
-            localStorage.setItem('mp_client_id', data.orderClientId)
-            console.log('Client ID guardado:', data.orderClientId)
-          }
-
-          if (!data?.init_point) {
-            toast.error('Error al generar link de pago. Por favor, intenta nuevamente.')
-            setIsLoading(false)
-            return
-          }
-
-          // Crear el producto en la base de datos
-          console.log('Creando producto con client_id:', data.orderClientId)
-
-          // Asegurarnos de que el ID de usuario no sea undefined
-          if (!user?.id) {
-            toast.error('No se pudo identificar al usuario. Por favor, inicia sesión nuevamente.')
-            setIsLoading(false)
-            return
-          }
-
-          const productData = {
-            windowType,
-            windowSize,
-            paymentType,
-            price: paymentType === 'financiacion' ? 12999 : 11999,
-            status: 'pending',
-            link_payment: data.init_point,
-            Id_user: user.id,
-            client_id: data.client_id
-          }
-
-          console.log('Datos del producto a crear:', productData)
-          const { data: product, error: productError } = await createProduct(productData)
-
-          if (productError) {
-            console.error('Error al crear el producto:', productError)
-            toast.error('El usuario ya tiene un producto pendiente. Por favor, intenta nuevamente.')
-            setIsLoading(false)
-            return
-          }
-
-          console.log('Producto creado exitosamente:', product)
-
-          // Redirigir al usuario a la página de pago de Mercado Pago
-          window.location.href = data.init_point
-        } catch (error) {
-          console.error('Error al crear el producto:', error)
-          toast.error('No se pudo registrar el producto. Por favor, intenta nuevamente.')
+        if (!data?.init_point) {
+          toast.error('Error al generar link de pago. Por favor, intenta nuevamente.')
           setIsLoading(false)
+          return
         }
+
+        // Guardar el client_id para referencia futura y tracking
+        if (data.client_id) {
+          localStorage.setItem('mp_client_id', data.client_id)
+          
+        }
+
+        
+
+        // Redirigir al usuario a la página de pago de Mercado Pago
+        window.location.href = data.init_point
       } catch (error) {
-        console.error('Error al procesar el pago:', error)
+        
         toast.error('No se pudo procesar el pago. Por favor, intenta nuevamente.')
         setIsLoading(false)
       }
     } catch (error) {
-      console.error('Error general:', error)
+      
       toast.error('Ocurrió un error inesperado. Por favor, intenta nuevamente.')
       setIsLoading(false)
     }
@@ -256,46 +258,127 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
       setLoadingValidateEmail(true)
       toast.loading('Procesando solicitud...', { id: 'login' })
 
-      const response = await Signup({
-        email: data?.email?.toString() || ''
+      // Verificar si el usuario existe en la tabla User
+      const response = await fetch('/api/user/check', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: data.email })
       })
-      setLoadingValidateEmail(false)
 
-      if (response.code === 'CONFIRM_EMAIL') {
-        toast.success('Se ha enviado un correo de confirmación. Por favor, revisa tu bandeja de entrada.', {
-          id: 'login'
-        })
-        methods.setValue('nameDelegation', nameDelegation)
-        saveDataInCookie('nameDelegation', nameDelegation)
-        saveDataInCookie('windowType', windowType)
-        saveDataInCookie('windowSize', windowSize)
-        saveDataInCookie('paymentType', paymentType)
-        setIsLoginOrSignup(response.code)
+      
+
+      if (!response.ok) {
+        
+        toast.error('Error al verificar usuario. Por favor, intenta nuevamente.', { id: 'login' })
+        setLoadingValidateEmail(false)
         return
       }
 
-      if (response.code === 'USER_SESSION') {
-        toast.success('Sesión iniciada correctamente', { id: 'login' })
-        methods.setValue('name', response?.data?.user?.user_metadata?.name || '')
-        methods.setValue('phone', response?.data?.user?.user_metadata?.phone || '')
+      const responseData = await response.json()
+      
+
+      if (responseData.exists && responseData.user) {
+        // El usuario existe, guardar en cookies y actualizar estado
+        setCookie('userEmail', data.email, 7)
+        setUserData(responseData.user)
+
+        // Actualizar los valores del formulario con los datos del usuario
+        methods.setValue('name', responseData.user.name || '')
+        methods.setValue('phone', responseData.user.phone || '')
         methods.setValue('nameDelegation', nameDelegation || '')
-        methods.setValue('street', response?.data?.user?.user_metadata?.street || '')
-        methods.setValue('numberExt', response?.data?.user?.user_metadata?.numberExt || '')
-        methods.setValue('numberInt', response?.data?.user?.user_metadata?.numberInt || '')
-        methods.setValue('reference', response?.data?.user?.user_metadata?.reference || '')
-        user = response?.data?.user || null
-        setIsLoginOrSignup(response.code)
-        return
+        methods.setValue('nameColonia', responseData.user.nameColonia || '')
+        methods.setValue('street', responseData.user.street || '')
+        methods.setValue('numberExt', responseData.user.numberExt || '')
+        methods.setValue('numberInt', responseData.user.numberInt || '')
+        methods.setValue('reference', responseData.user.reference || '')
+
+        setIsLoginOrSignup('USER_SESSION')
+        toast.success('Usuario encontrado. Por favor, completa tus datos.', { id: 'login' })
+
+        // Avanzar al siguiente paso automáticamente
+        handleNext()
+      } else {
+        // El usuario no existe, crear un nuevo usuario en la tabla User
+        const createResponse = await fetch('/api/user/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: data.email,
+            nameDelegation: nameDelegation
+          })
+        })
+
+        
+
+        if (!createResponse.ok) {
+          
+          toast.error('Error al registrar usuario. Por favor, intenta nuevamente.', { id: 'login' })
+          setLoadingValidateEmail(false)
+          return
+        }
+
+        const createData = await createResponse.json()
+        
+
+        if (createData.success && createData.user) {
+          // Guardar el email en cookies
+          setCookie('userEmail', data.email, 7)
+          setUserData(createData.user)
+
+          // Inicializar el formulario con los datos básicos
+          methods.setValue('nameDelegation', nameDelegation || '')
+
+          setIsLoginOrSignup('USER_SESSION')
+          toast.success('Usuario registrado. Por favor, completa tus datos.', { id: 'login' })
+
+          // Avanzar al siguiente paso automáticamente
+          handleNext()
+        } else {
+          toast.error('Error al registrar usuario. Por favor, intenta nuevamente.', { id: 'login' })
+        }
       }
 
-      if (response.code === 'ERROR') {
-        toast.error('Error al procesar la solicitud', { id: 'login' })
-        router.push(`/failure`)
-      }
+      // Guardar datos en cookies para mantener el estado
+      saveDataInCookie('nameDelegation', nameDelegation)
+      saveDataInCookie('windowType', windowType)
+      saveDataInCookie('windowSize', windowSize)
+      saveDataInCookie('paymentType', paymentType)
+
+      setLoadingValidateEmail(false)
     } catch (error) {
+      
       setLoadingValidateEmail(false)
       toast.error('Error inesperado al procesar la solicitud', { id: 'login' })
     }
+  }
+
+  // Función para cambiar el correo electrónico
+  const handleChangeEmail = () => {
+    // Eliminar la cookie de usuario
+    deleteCookie('userEmail')
+
+    // Limpiar el estado de usuario
+    setUserData(null)
+
+    // Volver al estado inicial de login/signup
+    setIsLoginOrSignup('INIT_SESSION')
+
+    // Limpiar el formulario de correo electrónico
+    methodsLoginOrSignup.setValue('email', '')
+
+    // Limpiar el formulario de datos personales
+    methods.setValue('name', '')
+    methods.setValue('phone', '')
+    methods.setValue('nameDelegation', nameDelegation || '')
+    methods.setValue('nameColonia', '')
+    methods.setValue('street', '')
+    methods.setValue('numberExt', '')
+    methods.setValue('numberInt', '')
+    methods.setValue('reference', '')
   }
 
   return (
@@ -303,7 +386,7 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
       {/* Enlace flotante al resumen */}
       <FloatingLink
         targetRef={summaryRef}
-        label={`Pagar: ${paymentType === 'financiacion' ? '$ 12.999' : '$ 11.999'} MXN`}
+        label={`Pagar: ${formatPrice(totalAmount)}`}
         icon={<CgPaypal className="mr-2" />}
         position="bottom-left"
       />
@@ -396,7 +479,7 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
               <Button
                 onClick={async () => {
                   await Signup({
-                    email: user?.email || ''
+                    email: userData?.email || ''
                   })
                 }}
               >
@@ -406,7 +489,7 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
           )}
 
           {/* Formulario de registro de correo */}
-          {isLoginOrSignup === 'INIT_SESSION' && !user?.email && (
+          {isLoginOrSignup === 'INIT_SESSION' && (
             <FormProvider {...methodsLoginOrSignup}>
               <form
                 onSubmit={handleSubmitLoginOrSignup(onSubmitLoginOrSignup)}
@@ -414,37 +497,34 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
                 ref={loginFormRef}
               >
                 <UserForm />
-                <Button type="submit" disabled={!isValidLoginOrSignup || loadingValidateEmail}>
-                  {loadingValidateEmail ? 'Procesando...' : 'Registrar correo'}
-                </Button>
+                <div className="flex justify-end">
+                  <Button type="submit" disabled={!isValidLoginOrSignup || loadingValidateEmail} className="mt-4">
+                    {loadingValidateEmail ? (
+                      <div className="flex items-center">
+                        <span className="mr-2">Procesando</span>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      </div>
+                    ) : (
+                      'Continuar'
+                    )}
+                  </Button>
+                </div>
               </form>
             </FormProvider>
           )}
-          {isLoginOrSignup === 'USER_SESSION' && user?.email && (
-            <div className="w-full p-5 flex justify-between flex-wrap" ref={userFormRef}>
-              <p className="text-lg font-bold">
-                Correo: <span className="text-blue-400 font-normal">{user?.email}</span>
-              </p>
-              <Button
-                variant="outline"
-                className="my-2"
-                onClick={() => {
-                  setIsLoginOrSignup('INIT_SESSION')
-                  methodsLoginOrSignup.setValue('email', user?.email || '')
-                  user = null
-                  Signup({
-                    email: '',
-                    signOut: true
-                  })
-                }}
-              >
-                Cambiar correo
-              </Button>
-            </div>
-          )}
 
-          {isLoginOrSignup === 'USER_VALIDATED' ||
-            (isLoginOrSignup === 'USER_SESSION' && (
+          {/* Mostrar información del usuario y formulario de datos personales */}
+          {isLoginOrSignup === 'USER_SESSION' && userData?.email && (
+            <>
+              <div className="w-full p-5 flex justify-between flex-wrap" ref={userFormRef}>
+                <p className="text-lg font-bold">
+                  Correo: <span className="text-blue-400 font-normal">{userData?.email}</span>
+                </p>
+                <Button variant="outline" onClick={handleChangeEmail}>
+                  Cambiar correo
+                </Button>
+              </div>
+
               <FormProvider {...methods}>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
@@ -452,9 +532,16 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
                   ref={ubicationFormRef}
                 >
                   <UbicationForm />
-                  <div className="flex gap-2">
-                    <Button type="submit" disabled={!isValid}>
-                      {isLoading ? 'Procesando...' : 'Ir a pagar'}
+                  <div className="flex justify-end">
+                    <Button type="submit" disabled={!isValid || isLoading} className="mt-4">
+                      {isLoading ? (
+                        <div className="flex items-center">
+                          <span className="mr-2">Procesando</span>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        </div>
+                      ) : (
+                        'Pagar'
+                      )}
                     </Button>
                   </div>
                   {/* validate object empty */}
@@ -470,7 +557,8 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
                   )}
                 </form>
               </FormProvider>
-            ))}
+            </>
+          )}
         </div>
         <div className="w-full md:min-w-[50%]" ref={summaryRef}>
           <Summary

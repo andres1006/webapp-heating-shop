@@ -14,6 +14,10 @@ import { CgSize } from 'react-icons/cg'
 import { MdPayment } from 'react-icons/md'
 import FloatingLink from '@/components/FloatingLink'
 import { addDelegationAndAddClisk } from '@/app/api/actions/delegations'
+import { PAYMENT_OPTIONS, getPriceByPaymentOption, formatPrice } from '@/constants'
+import { createUrlWithParams } from '@/utils/url-helpers'
+import { useSequentialScrollToSection } from '@/hooks/useScrollToSection'
+
 type ConfiguratorPageProps = {
   nameDelegation: string
   windowSize: string
@@ -46,29 +50,24 @@ export default function ConfiguratorPage({
     return count
   }, [nameDelegation, windowType, windowSize, paymentType])
 
-  // Efecto para desplazarse automáticamente a la sección correspondiente cuando cambia el paso
-  useEffect(() => {
-    const scrollToSection = () => {
-      if (currentStep === 0) {
-        locationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      } else if (currentStep === 1 && windowTypeRef.current) {
-        windowTypeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      } else if (currentStep === 2 && windowSizeRef.current) {
-        windowSizeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      } else if (currentStep === 3 && paymentTypeRef.current) {
-        paymentTypeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      } else if (currentStep === 4 && summaryRef.current) {
-        summaryRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-    }
+  // Crear un objeto de referencias para el hook de desplazamiento
+  const sectionRefs = useMemo(
+    () => ({
+      0: locationRef,
+      1: windowTypeRef,
+      2: windowSizeRef,
+      3: paymentTypeRef,
+      4: summaryRef
+    }),
+    []
+  )
 
-    // Pequeño retraso para asegurar que los componentes estén renderizados
-    const timer = setTimeout(() => {
-      scrollToSection()
-    }, 100)
-
-    return () => clearTimeout(timer)
-  }, [currentStep])
+  // Usar el hook para manejar el desplazamiento automático
+  useSequentialScrollToSection(sectionRefs, currentStep, {
+    behavior: 'smooth',
+    block: 'start',
+    delay: 100
+  })
 
   const updateUrl = (
     newNameDelegation: string,
@@ -76,19 +75,19 @@ export default function ConfiguratorPage({
     newWindowSize: string,
     newPaymentType: string
   ) => {
-    const params = new URLSearchParams({
-      nameDelegation: newNameDelegation || '',
-      windowType: newWindowType || '',
-      windowSize: newWindowSize || '',
-      paymentType: newPaymentType || ''
+    const url = createUrlWithParams('/configurador', {
+      nameDelegation: newNameDelegation,
+      windowType: newWindowType,
+      windowSize: newWindowSize,
+      paymentType: newPaymentType
     })
-    router.replace(`/configurador?${params.toString()}`, { scroll: false })
+    router.replace(url, { scroll: false })
   }
 
   const addclickDelegation = async (nameDelegation: string) => {
     const { error, status } = await addDelegationAndAddClisk(nameDelegation)
     if (error) {
-      console.error(error)
+      
     }
   }
 
@@ -101,7 +100,7 @@ export default function ConfiguratorPage({
       {shouldShowFloatingLink && (
         <FloatingLink
           targetRef={summaryRef}
-          label={`Total ${paymentType === 'financiacion' ? '$ 12.999' : '$ 11.999'} MXN, ir a pagar`}
+          label={`Total ${formatPrice(getPriceByPaymentOption(paymentType))} MXN, ir a pagar`}
           position="bottom-left"
         />
       )}

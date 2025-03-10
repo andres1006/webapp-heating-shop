@@ -6,10 +6,12 @@ import {
   APLICATION_ID_ONE_SIGNAL,
   emailSoporteFreddo,
   PRICE_INSTALLATION_CONTADO,
-  PRICE_INSTALLATION_FINANCIADO
+  PRICE_INSTALLATION_FINANCIADO,
+  getPriceByPaymentOption,
+  getInstallmentsByPaymentOption
 } from '@/constants'
-import { URL_ONE_SIGNAL } from '@/constants'
 import { createClient } from '@/utils/supabase/server'
+import { cookies } from 'next/headers'
 
 const PUBLIC_APP_USR = 'APP_USR-c6ae916f-2116-460e-a92b-bdb05d79630f'
 // Micke
@@ -29,88 +31,91 @@ const descriptionMessage = {
 // Configura el SDK de MercadoPago
 export const mercadopago = new MercadoPagoConfig({ accessToken: ACCESS_TOKEN || '' })
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  // accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN || ''
+export async function POST(req: Request) {
+  try {
+    // Obtener las cookies
+    const cookieStore = cookies()
+    const nameDelegation = cookieStore.get('nameDelegation')?.value || ''
+    const windowType = cookieStore.get('windowType')?.value || ''
+    const windowSize = cookieStore.get('windowSize')?.value || ''
+    const paymentType = cookieStore.get('paymentType')?.value || ''
+    const userEmail = cookieStore.get('userEmail')?.value || ''
 
-  // recive data to body request
-  const body = await req.body
-  console.log('body', body)
-
-  // get user session from request
-  const supabase = await createClient()
-  const {
-    data: { user }
-  } = await supabase.auth.getUser()
-
-  // get cookies from request
-  const cookies: any = req.cookies
-
-  // read cookies
-  const nameDelegation = cookies?._parsed?.get('nameDelegation')?.value || ''
-  const windowType = cookies?._parsed?.get('windowType')?.value || ''
-  const windowSize = cookies?._parsed?.get('windowSize')?.value || ''
-  const paymentType = cookies?._parsed?.get('paymentType')?.value || ''
-
-  const totalAmount = paymentType === 'financiacion' ? 12999 : PRICE_INSTALLATION_CONTADO
-
-  if (nameDelegation === '' || windowType === '' || windowSize === '' || paymentType === '') {
-    return NextResponse.json({ error: 'Datos incompletos', body, nameDelegation, windowType, windowSize, paymentType })
-  }
-
-  const description = descriptionMessage[windowType as keyof typeof descriptionMessage]
-  const title = descriptionMessage[windowType as keyof typeof descriptionMessage]
-
-  if (req.method === 'POST') {
-    try {
-      // Generar un ID único para este pedido que usaremos como external_reference
-      const orderClientId = uuidv4()
-
-      const preference = await new Preference(mercadopago).create({
-        body: {
-          items: [
-            {
-              id: uuidv4(),
-              title,
-              description,
-              unit_price: Number(totalAmount),
-              quantity: 1,
-            }
-          ],
-          payer: {
-            email: user?.email,
-            name: user?.user_metadata?.name,
-            phone: {
-              number: user?.user_metadata?.phone
-            }
-          },
-          back_urls: {
-            success: `${process.env.NEXT_PUBLIC_URL}/success`,
-            failure: `${process.env.NEXT_PUBLIC_URL}/failure`,
-            pending: `${process.env.NEXT_PUBLIC_URL}/pending`,
-          },
-          auto_return: 'approved',
-          payment_methods: {
-            installments: 12 // Número máximo de cuotas permitidas
-          },
-          // Usar el ID único como external_reference para poder identificar este pedido en las notificaciones
-          external_reference: orderClientId,
-          // Actualizar la URL de notificación para usar nuestro nuevo webhook
-          notification_url: `${process.env.NEXT_PUBLIC_URL}/api/webhook/mercadopago`
-        }
-      })
-
-      /* const response = await sendNotification() */
-      console.log('preference', preference)
-
-      // Devolver el client_id generado por nosotros, no el de la preferencia
-      return NextResponse.json({
-        init_point: preference.init_point,
-        client_id: orderClientId
-      })
-    } catch (error) {
-      console.error('Error al crear la preferencia de pago:', error)
-      return NextResponse.json({ error: 'Error al crear la preferencia de pago' })
+    if (!userEmail) {
+      return NextResponse.json({ error: 'No se ha identificado al usuario' }, { status: 400 })
     }
+
+    if (nameDelegation === '' || windowType === '' || windowSize === '' || paymentType === '') {
+      return NextResponse.json({
+        error: 'Datos incompletos',
+        nameDelegation,
+        windowType,
+        windowSize,
+        paymentType
+      }, { status: 400 })
+    }
+
+    // Obtener el usuario de la tabla User
+    const supabase = await createClient()
+    const { data: userData, error: userError } = await supabase
+      .from('User')
+      .select('*')
+      .eq('email', userEmail)
+      .single()
+
+    if (userError || !userData) {
+      return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 })
+    }
+
+    const totalAmount = getPriceByPaymentOption(paymentType)
+    const description = descriptionMessage[windowType as keyof typeof descriptionMessage]
+    const title = descriptionMessage[windowType as keyof typeof descriptionMessage]
+
+    // Generar un ID único para este pedido que usaremos como external_reference
+    const orderClientId = uuidv4()
+
+    const preference = await new Preference(mercadopago).create({
+      body: {
+        items: [
+          {
+            id: uuidv4(),
+            title,
+            description,
+            unit_price: Number(totalAmount),
+            quantity: 1,
+          }
+        ],
+        payer: {
+          email: userData.email,
+          name: userData.name || 'Cliente',
+          phone: {
+            number: userData.phone || ''
+          }
+        },
+        back_urls: {
+          success: `${process.env.NEXT_PUBLIC_URL}/success`,
+          failure: `${process.env.NEXT_PUBLIC_URL}/failure`,
+          pending: `${process.env.NEXT_PUBLIC_URL}/pending`,
+        },
+        auto_return: 'approved',
+        payment_methods: {
+          default_installments: getInstallmentsByPaymentOption(paymentType),
+          installments: 24 // Número máximo de cuotas permitidas
+        },
+        // Usar el ID único como external_reference para poder identificar este pedido en las notificaciones
+        external_reference: orderClientId,
+        // Actualizar la URL de notificación para usar nuestro nuevo webhook
+        notification_url: `${process.env.NEXT_PUBLIC_URL}/api/webhook/mercadopago`
+      }
+    })
+
+    // Devolver el client_id generado por nosotros, no el de la preferencia
+    return NextResponse.json({
+      init_point: preference.init_point,
+      client_id: orderClientId
+    })
+  } catch (error) {
+    return NextResponse.json({ error: 'Error al crear la preferencia de pago' }, { status: 500 })
   }
 }
 

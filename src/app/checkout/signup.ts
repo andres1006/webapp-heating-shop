@@ -7,7 +7,7 @@ const CODE_USER = '2otWQNGlaK7gOlVMvInQywDUpkvLEheSNUylkADlsCVS4K206y'
 export const Signup = async ({ email, signOut = false }: { email: string, signOut?: boolean }) => {
   try {
 
-    console.log('email', email)
+    
     const supabase = await createClient()
 
     // close session
@@ -25,10 +25,44 @@ export const Signup = async ({ email, signOut = false }: { email: string, signOu
       password: CODE_USER
     })
 
-    console.log('existingUser', existingUser)
+    // create user  and save in table user
+    const { data: userData, error: userError } = await supabase.from('User').insert({
+      email: email,
+      name: existingUser.user?.user_metadata?.name || '',
+      phone: existingUser.user?.user_metadata?.phone || '',
+      street: existingUser.user?.user_metadata?.street || '',
+      numberExt: existingUser.user?.user_metadata?.numberExt || '',
+      numberInt: existingUser.user?.user_metadata?.numberInt || '',
+      reference: existingUser.user?.user_metadata?.reference || ''
+    }) as any
+
+    if (userError || !userData?.id) {
+      return {
+        code: 'ERROR',
+        data: null,
+        error: userError
+      }
+    }
+
+    // update auth user with id_user_table
+    const { data: updateUser, error: updateUserError } = await supabase.auth.updateUser({
+      data: {
+        id_user_table: userData?.id || ''
+      }
+    })
+
+    if (updateUserError) {
+      return {
+        code: 'ERROR',
+        data: null,
+        error: updateUserError
+      }
+    }
+
+    
     if (existingUser.user) {
 
-      console.log('updatedUser', existingUser)
+      
 
       // User already exists, handle accordingly
       return {
@@ -40,7 +74,7 @@ export const Signup = async ({ email, signOut = false }: { email: string, signOu
       }
     }
 
-    console.log('signing up')
+    
     // If user doesn't exist, proceed with sign up
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -48,7 +82,7 @@ export const Signup = async ({ email, signOut = false }: { email: string, signOu
     })
 
     // MIGHT BE SAVE ORDER IN DATABASE
-    console.log('data', data)
+    
 
     return {
       code: 'USER_SESSION',

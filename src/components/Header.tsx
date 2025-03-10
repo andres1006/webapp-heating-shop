@@ -11,6 +11,7 @@ const navLinks = [
   // { href: '/financiamiento', label: 'Financiamiento' },
   { href: '/faq', label: 'Preguntas frecuentes' },
   { href: '/contact', label: 'Contacto' }
+  /*  { href: '/admin', label: 'Admin', isAdmin: true } */
 ]
 
 const Header = () => {

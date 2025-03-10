@@ -26,14 +26,12 @@ const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
     redirect(`/configurador?${params.toString()}`)
   }
 
-  const supabase = await createClient()
-
-  const { data, error } = await supabase.auth.getUser()
+  // No necesitamos obtener el usuario aquí, ya que ahora verificaremos
+  // la existencia del usuario en la tabla User directamente en el componente StepsPage
 
   return (
     <div className="container mx-auto pt-20 px-4">
       <StepsPage
-        initUser={data?.user}
         nameDelegation={searchParams?.nameDelegation || ''}
         windowType={searchParams?.windowType || ''}
         windowSize={searchParams?.windowSize || ''}

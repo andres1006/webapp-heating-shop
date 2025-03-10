@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from "@/utils/supabase/server"
+import { getPriceByPaymentOption } from "@/constants"
 
 export const createProduct = async (product: {
   windowType: string
@@ -10,27 +11,58 @@ export const createProduct = async (product: {
   status: string
   link_payment: string
   Id_user: string,
-  client_id: string
+  client_id: string,
+  id_user_table: string
 }) => {
   try {
-    if (!product?.Id_user) {
-      return { error: 'Usuario no encontrado' }
+    if (!product?.id_user_table) {
+      return {
+        error: 'Usuario no encontrado',
+        details: 'Se requiere un ID de usuario válido para crear un producto'
+      }
     }
 
-    // validate if the product already exists witch user and status is pending
+    // Validar campos obligatorios
+    const requiredFields = ['windowType', 'windowSize', 'paymentType', 'status'];
+    const missingFields = requiredFields.filter(field => !product[field as keyof typeof product]);
+
+    if (missingFields.length > 0) {
+      return {
+        error: 'Campos requeridos faltantes',
+        details: `Los siguientes campos son obligatorios: ${missingFields.join(', ')}`
+      };
+    }
+
+    // Obtener el precio correcto según la opción de pago
+    const price = getPriceByPaymentOption(product.paymentType);
+    
+
+    // Crear cliente de Supabase
     const supabase = await createClient()
 
-    const { data: productData, error: productError } = await supabase
-      .from('Product')
-      .select('*')
-      .eq('Id_user', product?.Id_user)
-      .eq('status', 'pending')
+    /*     // Verificar si el producto ya existe con el usuario y estado pendiente
+        const { data: productData, error: productError } = await supabase
+          .from('Product')
+          .select('*')
+          .eq('Id_user', product?.Id_user)
+          .eq('status', 'pending')
+    
+        if (productError) {
+          return {
+            error: 'Error al verificar productos existentes',
+            details: productError.message
+          }
+        }
+    
+        if (productData && productData.length > 0) {
+          return {
+            error: 'Producto existente',
+            details: 'El usuario ya tiene un servicio creado o pendiente',
+            productId: productData[0].id
+          }
+        } */
 
-    if (productData && productData.length > 0) {
-      return { error: 'El usuario ya tiene un servicio creado o pendiente' }
-    }
-
-    // Intentar insertar directamente primero
+    // Intentar insertar el producto
     const { data, error } = await supabase
       .from('Product')
       .insert([
@@ -38,24 +70,36 @@ export const createProduct = async (product: {
           windowType: product?.windowType,
           windowSize: product?.windowSize,
           paymentType: product?.paymentType,
-          price: product?.price,
+          price: price,
           status: product?.status,
           link_payment: product?.link_payment,
-          Id_user: product?.Id_user,
+          Id_user_table: product?.id_user_table,
           client_id: product?.client_id
         },
       ])
       .select()
 
-
-    // Si hay un error y es de tipo RLS (PGRST301), intentar con la función RPC
+    // Manejar errores de inserción
     if (error) {
-
-      return { error }
+      return {
+        error: 'Error al crear el producto',
+        details: error.message,
+        code: error.code
+      }
     }
 
-    return { data }
-  } catch (error) {
-    return { error }
+    
+    
+
+    return {
+      data,
+      success: true,
+      message: 'Producto creado exitosamente'
+    }
+  } catch (error: any) {
+    return {
+      error: 'Error inesperado',
+      details: error?.message || 'Ocurrió un error al procesar la solicitud'
+    }
   }
 }
