@@ -76,7 +76,6 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
 
   // Calcular el monto total basado en el tipo de pago
   const totalAmount = getPriceByPaymentOption(paymentType)
-  
 
   // Referencias para las secciones de pasos
   const stepSectionRef = useRef<HTMLDivElement>(null)
@@ -152,8 +151,6 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
   const onSubmit = async (formData: FormData) => {
     setIsLoading(true)
 
-    
-    
     try {
       if (!userData?.email) {
         toast.error('No se ha identificado al usuario. Por favor, ingresa tu correo electrónico primero.')
@@ -176,8 +173,9 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
       })
 
       if (userUpdateError) {
-        
-        toast.error('No se pudo actualizar la información del usuario. Por favor, intenta nuevamente.')
+        toast.error(
+          'No se pudo actualizar la información del usuario. Por favor, intenta nuevamente.' + userUpdateError
+        )
         setIsLoading(false)
         return
       }
@@ -203,8 +201,6 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
           email: userData.email
         }
 
-        
-
         // Llamar a la API para crear el producto y generar el link de pago
         const response = await fetch('/api/checkout/direct', {
           method: 'POST',
@@ -216,14 +212,13 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
 
         if (!response.ok) {
           const errorData = await response.json()
-          
+
           toast.error(errorData.error || 'Error al procesar el pago. Por favor, intenta nuevamente.')
           setIsLoading(false)
           return
         }
 
         const data = await response.json()
-        
 
         if (!data?.init_point) {
           toast.error('Error al generar link de pago. Por favor, intenta nuevamente.')
@@ -234,20 +229,15 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
         // Guardar el client_id para referencia futura y tracking
         if (data.client_id) {
           localStorage.setItem('mp_client_id', data.client_id)
-          
         }
-
-        
 
         // Redirigir al usuario a la página de pago de Mercado Pago
         window.location.href = data.init_point
       } catch (error) {
-        
         toast.error('No se pudo procesar el pago. Por favor, intenta nuevamente.')
         setIsLoading(false)
       }
     } catch (error) {
-      
       toast.error('Ocurrió un error inesperado. Por favor, intenta nuevamente.')
       setIsLoading(false)
     }
@@ -267,17 +257,13 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
         body: JSON.stringify({ email: data.email })
       })
 
-      
-
       if (!response.ok) {
-        
         toast.error('Error al verificar usuario. Por favor, intenta nuevamente.', { id: 'login' })
         setLoadingValidateEmail(false)
         return
       }
 
       const responseData = await response.json()
-      
 
       if (responseData.exists && responseData.user) {
         // El usuario existe, guardar en cookies y actualizar estado
@@ -312,17 +298,13 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
           })
         })
 
-        
-
         if (!createResponse.ok) {
-          
           toast.error('Error al registrar usuario. Por favor, intenta nuevamente.', { id: 'login' })
           setLoadingValidateEmail(false)
           return
         }
 
         const createData = await createResponse.json()
-        
 
         if (createData.success && createData.user) {
           // Guardar el email en cookies
@@ -350,7 +332,6 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
 
       setLoadingValidateEmail(false)
     } catch (error) {
-      
       setLoadingValidateEmail(false)
       toast.error('Error inesperado al procesar la solicitud', { id: 'login' })
     }

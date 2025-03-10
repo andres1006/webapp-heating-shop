@@ -20,25 +20,36 @@ export const updateUser = async (user: {
     // check if user exists in supabase
     const { data: userData, error: userError } = await supabase.from('User').select('*').eq('user_id', user.user_id) as any
 
-    
-
     if (userError) {
       return { error: userError }
     }
 
     let dataUser = null
+
+    const newUser = {
+      name: user.name,
+      phone: user.phone,
+      numberExt: user.numberExt,
+      numberInt: user.numberInt,
+      reference: user.reference,
+      nameColonia: user.nameColonia,
+      nameDelegation: user.nameDelegation,
+      street: user.street,
+      email: user.email,
+      role: 'client',
+      password: '123456'
+    }
+
     if (userData) {
       // update table user in supabase  
-      const { data, error } = await supabase.from('User').update({
-        name: user.name,
-        phone: user.phone,
-        street: user.street,
-        numberExt: user.numberExt,
-        numberInt: user.numberInt,
-        reference: user.reference,
-        nameColonia: user.nameColonia,
-        nameDelegation: user.nameDelegation
-      }).eq('user_id', user.user_id) as any
+      const { data, error } = await supabase.from('User').update(newUser).eq('user_id', user.user_id).select() as any
+
+      console.log('data updateUser', data)
+      console.log('error updateUser', error)
+
+      if (error.code === '23505') {
+        return { error: { message: 'El usuario ya tiene numero de telefono asociado a otra cuenta' } }
+      }
 
       if (error) {
         return { error }
@@ -46,16 +57,8 @@ export const updateUser = async (user: {
       dataUser = data
     } else {
       // create table user in supabase
-      const { data, error } = await supabase.from('User').insert({
-        name: user.name,
-        phone: user.phone,
-        street: user.street,
-        numberExt: user.numberExt,
-        numberInt: user.numberInt,
-        reference: user.reference,
-        nameColonia: user.nameColonia,
-        nameDelegation: user.nameDelegation
-      }) as any
+      const { data, error } = await supabase.from('User').insert(newUser) as any
+
 
       if (error) {
         return { error }
@@ -63,28 +66,8 @@ export const updateUser = async (user: {
       dataUser = data
     }
 
-    
 
-
-    const { data: usetAuthData, error: usetAuthError } = await updateUserAuth({
-      name: user.name,
-      phone: user.phone,
-      street: user.street,
-      numberExt: user.numberExt,
-      numberInt: user.numberInt,
-      reference: user.reference,
-      nameColonia: user.nameColonia,
-      nameDelegation: user.nameDelegation,
-      id_user_table: dataUser?.id || ''
-    })
-
-
-    if (usetAuthError) {
-      return { error: usetAuthError }
-    }
-
-
-    return { data: usetAuthData }
+    return { data: dataUser }
   } catch (error) {
     return { error }
   }
@@ -168,11 +151,11 @@ export const getUserById = async (id: string) => {
 export async function isAdmin(email: string): Promise<boolean> {
   try {
     if (!email) {
-      
+
       return false;
     }
 
-    
+
     const supabase = await createClient();
 
     // Obtener el usuario de la tabla User
@@ -183,17 +166,17 @@ export async function isAdmin(email: string): Promise<boolean> {
       .single();
 
     if (error || !data) {
-      
+
       return false;
     }
 
     // Verificar si el usuario tiene el rol de administrador
     const isAdmin = data.role === 'admin';
-    
+
 
     return isAdmin;
   } catch (error: any) {
-    
+
     return false;
   }
 }
@@ -258,7 +241,7 @@ export async function verifyAdminCredentials(email: string, password: string): P
       user: userWithoutPassword
     };
   } catch (error: any) {
-    
+
     return {
       success: false,
       message: 'Error al verificar credenciales'
@@ -319,7 +302,7 @@ export async function createAdminUser(user: {
       .single();
 
     if (error) {
-      
+
       return {
         success: false,
         message: `Error al crear usuario: ${error.message}`
@@ -335,7 +318,7 @@ export async function createAdminUser(user: {
       message: 'Usuario administrador creado con éxito'
     };
   } catch (error: any) {
-    
+
     return {
       success: false,
       message: 'Error al crear usuario administrador'
