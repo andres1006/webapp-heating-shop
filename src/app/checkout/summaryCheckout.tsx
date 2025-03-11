@@ -158,20 +158,22 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
         return
       }
 
+      console.log('userData onSubmit', userData)
       // Actualizar información del usuario en la tabla User
       const { error: userUpdateError } = await updateUser({
         user_id: userData?.user_id || '',
-        email: userData.email,
-        name: formData.name,
-        phone: formData.phone,
-        street: formData.street,
-        numberExt: formData.numberExt,
-        numberInt: formData.numberInt,
-        reference: formData.reference,
-        nameColonia: formData.nameColonia,
+        email: userData?.email || '',
+        name: formData?.name || '',
+        phone: formData?.phone || '',
+        street: formData?.street || '',
+        numberExt: formData?.numberExt || '',
+        numberInt: formData?.numberInt || '',
+        reference: formData?.reference || '',
+        nameColonia: formData?.nameColonia || '',
         nameDelegation: nameDelegation
       })
 
+      console.log('userUpdateError', userUpdateError)
       if (userUpdateError) {
         toast.error(
           'No se pudo actualizar la información del usuario. Por favor, intenta nuevamente.' + userUpdateError
@@ -209,6 +211,8 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
           },
           body: JSON.stringify(productData)
         })
+
+        console.log('response', response)
 
         if (!response.ok) {
           const errorData = await response.json()
@@ -265,6 +269,7 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
 
       const responseData = await response.json()
 
+      console.log('responseData', responseData)
       if (responseData.exists && responseData.user) {
         // El usuario existe, guardar en cookies y actualizar estado
         setCookie('userEmail', data.email, 7)
@@ -306,10 +311,34 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
 
         const createData = await createResponse.json()
 
-        if (createData.success && createData.user) {
+        if (createData.success) {
+          if (!createData.user) {
+            toast.success('Usuario no registrado. Por favor, completa tus datos.', { id: 'login' })
+            setLoadingValidateEmail(false)
+            // Guardar el email en cookies
+            setCookie('userEmail', data.email, 7)
+            setIsLoginOrSignup('USER_SESSION')
+            setUserData({
+              user_id: '',
+              email: data.email,
+              name: '',
+              phone: '',
+              street: '',
+              numberExt: '',
+              numberInt: '',
+              reference: '',
+              nameColonia: '',
+              nameDelegation: nameDelegation,
+              role: 'user'
+            })
+            // Inicializar el formulario con los datos básicos
+            methods.setValue('nameDelegation', nameDelegation || '')
+            // Avanzar al siguiente paso automáticamente
+            handleNext()
+            return
+          }
           // Guardar el email en cookies
           setCookie('userEmail', data.email, 7)
-          setUserData(createData.user)
 
           // Inicializar el formulario con los datos básicos
           methods.setValue('nameDelegation', nameDelegation || '')

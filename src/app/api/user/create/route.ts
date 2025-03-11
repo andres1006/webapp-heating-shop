@@ -28,41 +28,42 @@ export async function POST(request: Request) {
                 message: 'El usuario ya existe'
             })
         }
-
-        // Crear el usuario en la tabla User
-        const { data, error } = await supabase
-            .from('User')
-            .insert([
-                {
-                    email,
-                    nameDelegation: nameDelegation || '',
-                    name: '',
-                    phone: '',
-                    street: '',
-                    numberExt: '',
-                    numberInt: '',
-                    reference: '',
-                    nameColonia: ''
-                }
-            ])
-            .select()
-            .single()
-
-        if (error) {
-            
-            return NextResponse.json(
-                { error: 'Error al crear usuario', details: error.message },
-                { status: 500 }
-            )
-        }
+        /* 
+                // Crear el usuario en la tabla User
+                const { data, error } = await supabase
+                    .from('User')
+                    .insert([
+                        {
+                            email,
+                            nameDelegation: nameDelegation || '',
+                            name: '',
+                            phone: '',
+                            street: '',
+                            numberExt: '',
+                            numberInt: '',
+                            reference: '',
+                            nameColonia: '',
+                            role: 'user',
+        
+                        }
+                    ])
+                    .select()
+        
+                console.log(error)
+                if (error) {
+                    return NextResponse.json(
+                        { error: 'Error al crear usuario', details: error.message },
+                        { status: 500 }
+                    )
+                } */
 
         return NextResponse.json({
             success: true,
-            user: data,
+            user: null,
             message: 'Usuario creado exitosamente'
         })
     } catch (error: any) {
-        
+
         return NextResponse.json(
             { error: 'Error interno del servidor', details: error.message },
             { status: 500 }

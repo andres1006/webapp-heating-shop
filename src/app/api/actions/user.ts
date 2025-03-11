@@ -16,12 +16,16 @@ export const updateUser = async (user: {
   try {
     const supabase = await createClient()
 
+    let userData = null
 
-    // check if user exists in supabase
-    const { data: userData, error: userError } = await supabase.from('User').select('*').eq('user_id', user.user_id) as any
+    if (user?.user_id) {
+      // check if user exists in supabase
+      const { data: responseFindUser, error: userError } = await supabase.from('User').select('*').eq('user_id', user?.user_id) as any
 
-    if (userError) {
-      return { error: userError }
+      if (userError) {
+        return { error: userError }
+      }
+      userData = responseFindUser[0]
     }
 
     let dataUser = null
@@ -40,14 +44,23 @@ export const updateUser = async (user: {
       password: '123456'
     }
 
+
     if (userData) {
       // update table user in supabase  
-      const { data, error } = await supabase.from('User').update(newUser).eq('user_id', user.user_id).select() as any
+      const { data, error } = await supabase.from('User').update({
+        name: newUser.name,
+        phone: newUser.phone,
+        numberExt: newUser.numberExt,
+        numberInt: newUser.numberInt,
+        reference: newUser.reference,
+        nameColonia: newUser.nameColonia,
+        nameDelegation: newUser.nameDelegation,
+        street: newUser.street,
+        role: newUser.role,
+        password: newUser.password
+      }).eq('user_id', user.user_id).select() as any
 
-      console.log('data updateUser', data)
-      console.log('error updateUser', error)
-
-      if (error.code === '23505') {
+      if (error?.code === '23505') {
         return { error: { message: 'El usuario ya tiene numero de telefono asociado a otra cuenta' } }
       }
 
@@ -57,7 +70,19 @@ export const updateUser = async (user: {
       dataUser = data
     } else {
       // create table user in supabase
-      const { data, error } = await supabase.from('User').insert(newUser) as any
+      const { data, error } = await supabase.from('User').insert({
+        email: newUser.email,
+        name: newUser.name,
+        phone: newUser.phone,
+        numberExt: newUser.numberExt,
+        numberInt: newUser.numberInt,
+        reference: newUser.reference,
+        nameColonia: newUser.nameColonia,
+        nameDelegation: newUser.nameDelegation,
+        street: newUser.street,
+        role: newUser.role,
+        password: newUser.password
+      }).select() as any
 
 
       if (error) {
