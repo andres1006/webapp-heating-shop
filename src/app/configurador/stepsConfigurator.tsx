@@ -87,7 +87,6 @@ export default function ConfiguratorPage({
   const addclickDelegation = async (nameDelegation: string) => {
     const { error, status } = await addDelegationAndAddClisk(nameDelegation)
     if (error) {
-      
     }
   }
 
@@ -231,7 +230,7 @@ export default function ConfiguratorPage({
               />
             )}
           </section>
-          <section className="w-full flex flex-col gap-4" ref={paymentTypeRef}>
+          {/*           <section className="w-full flex flex-col gap-4" ref={paymentTypeRef}>
             {nameDelegation && windowSize && windowType && coloniaIsValid && (
               <PaymentTypeSelector
                 selectedType={paymentType}
@@ -242,7 +241,7 @@ export default function ConfiguratorPage({
                 }}
               />
             )}
-          </section>
+          </section> */}
         </ScrollArea>
         <section className="w-full flex flex-col gap-4" ref={summaryRef}>
           {windowSize && windowType && coloniaIsValid && (

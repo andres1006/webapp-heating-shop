@@ -22,7 +22,7 @@ import { useSequentialScrollToSection } from '@/hooks/useScrollToSection'
 import FloatingLink from '@/components/FloatingLink'
 import toast from 'react-hot-toast'
 import { cookies } from 'next/headers'
-import { getPriceByPaymentOption, formatPrice } from '@/constants'
+import { getPriceByPaymentOption, formatPrice, PAYMENT_OPTIONS } from '@/constants'
 import { setCookie, getCookie as getClientCookie, deleteCookie } from '@/utils/cookies'
 import { Signup } from './signup'
 
@@ -196,7 +196,7 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
         const productData = {
           windowType,
           windowSize,
-          paymentType,
+          paymentType: PAYMENT_OPTIONS[0].id,
           price: price,
           status: 'pending',
           id_user_table: userData.user_id,

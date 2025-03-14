@@ -37,7 +37,7 @@ export const formatPrice = (price: number): string => {
       maximumFractionDigits: 0
     }).format(safePrice);
   } catch (error) {
-    
+
     return `$${safePrice.toLocaleString()} MXN`;
   }
 }
@@ -66,7 +66,7 @@ export function formatDate(dateString: string | null | undefined): string {
       minute: '2-digit'
     });
   } catch (error) {
-    
+
     return 'Error en formato';
   }
 }
@@ -76,37 +76,40 @@ export const PAYMENT_OPTIONS = [
   {
     id: 'contado',
     label: '1 pago',
-    price: 12000,
+    price: 11999,
+    priceWithIva: 699,
     months: 1,
     monthlyPayment: null
   },
-  {
-    id: 'meses_6',
-    label: '6 meses',
-    price: 12960,
-    months: 6,
-    monthlyPayment: 2160
-  },
-  {
-    id: 'meses_12',
-    label: '12 meses',
-    price: 13560,
-    months: 12,
-    monthlyPayment: 1130
-  },
-  {
-    id: 'meses_24',
-    label: '24 meses',
-    price: 15360,
-    months: 24,
-    monthlyPayment: 640
-  }
+  /*   {
+      id: 'meses_6',
+      label: '6 meses',
+      price: 12960,
+      months: 6,
+      monthlyPayment: 2160
+    },
+    {
+      id: 'meses_12',
+      label: '12 meses',
+      price: 13560,
+      months: 12,
+      monthlyPayment: 1130
+    },
+    {
+      id: 'meses_24',
+      label: '24 meses',
+      price: 15360,
+      months: 24,
+      monthlyPayment: 640
+    } */
 ];
 
 // Función para obtener el precio según el plazo seleccionado
 export function getPriceByPaymentOption(paymentOptionId: string): number {
-  const option = PAYMENT_OPTIONS.find(option => option.id === paymentOptionId);
-  return option ? option.price : PAYMENT_OPTIONS[0].price; // Precio por defecto si no se encuentra la opción
+  return PAYMENT_OPTIONS[0].price
+
+  /*   const option = PAYMENT_OPTIONS.find(option => option.id === paymentOptionId);
+    return option ? option.price : PAYMENT_OPTIONS[0].price; // Precio por defecto si no se encuentra la opción */
 }
 
 // Función para obtener la cuota mensual según el plazo seleccionado

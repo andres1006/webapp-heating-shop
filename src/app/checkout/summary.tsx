@@ -62,14 +62,14 @@ const Summary: FC<SummaryProps> = ({
           <strong className="lowercase first-letter:capitalize">Tipo de apertura:</strong>
           {windowType || 'No seleccionado'}
         </p>
-        <p className="text-sm capitalize gap-2 flex items-center">
+        {/*         <p className="text-sm capitalize gap-2 flex items-center">
           <strong className="lowercase first-letter:capitalize">Plan de Pago:</strong>
           {selectedOption.label}
-        </p>
+        </p> */}
 
         <div className="flex flex-col items-center mt-5">
-          <p className="text-2xl font-semibold">{priceDisplay}</p>
-          <p className="text-lg font-medium text-gray-700">Total: {formatPrice(price)}</p>
+          <p className="text-2xl font-semibold">Desde: $699</p>
+          {/*  <p className="text-lg font-medium text-gray-700">Total: {formatPrice(price)}</p> */}
         </div>
       </div>
       {showButtonToPay && (

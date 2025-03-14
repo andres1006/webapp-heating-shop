@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers'
 import ConfiguratorPage from './stepsConfigurator'
+import { PAYMENT_OPTIONS } from '@/constants'
 
 type SearchParams = {
   nameDelegation: string
@@ -15,7 +16,7 @@ const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
         nameDelegation={searchParams?.nameDelegation || ''}
         windowType={searchParams?.windowType || ''}
         windowSize={searchParams?.windowSize || ''}
-        paymentType={searchParams?.paymentType || ''}
+        paymentType={searchParams?.paymentType || PAYMENT_OPTIONS[0].id}
       />
     </section>
   )

@@ -54,7 +54,7 @@ const Summary: FC<SummaryProps> = ({ nameDelegation, windowSize, windowType, pay
     }, 500)
   }
 
-  const isFormComplete = !!windowSize && !!windowType && !!paymentType && !!nameDelegation
+  const isFormComplete = !!windowSize && !!windowType /* && !!paymentType */ && !!nameDelegation
 
   return (
     <div className="flex flex-1 p-4 flex-col py-3 w-full rounded-lg bg-gray-50 gap-4">
@@ -76,14 +76,14 @@ const Summary: FC<SummaryProps> = ({ nameDelegation, windowSize, windowType, pay
           <strong className="lowercase first-letter:capitalize">Tipo de apertura:</strong>
           {windowType || 'No seleccionado'}
         </p>
-        <p className="text-sm capitalize gap-2 flex items-center">
+        {/*         <p className="text-sm capitalize gap-2 flex items-center">
           <strong className="lowercase first-letter:capitalize">Plan de Pago:</strong>
           {selectedOption.label}
-        </p>
+        </p> */}
 
         <div className="flex flex-col items-center mt-5">
-          <p className="text-2xl font-semibold">{priceDisplay}</p>
-          <p className="text-lg font-medium text-gray-700">Total: {formatPrice(price)}</p>
+          <p className="text-2xl font-semibold">Desde: $699</p>
+          {/*     <p className="text-lg font-medium text-gray-700">Total: {formatPrice(price)}</p> */}
         </div>
       </div>
       <Separator />

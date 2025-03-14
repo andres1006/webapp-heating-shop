@@ -2,6 +2,7 @@
 import StepsPage from './summaryCheckout'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
+import { PAYMENT_OPTIONS } from '@/constants'
 
 type SearchParams = {
   nameDelegation: string
@@ -14,7 +15,7 @@ const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
   const nameDelegation = searchParams?.nameDelegation || ''
   const windowType = searchParams?.windowType || ''
   const windowSize = searchParams?.windowSize || ''
-  const paymentType = searchParams?.paymentType || ''
+  const paymentType = searchParams?.paymentType || PAYMENT_OPTIONS[0].id
 
   if (!nameDelegation || !windowType || !windowSize || !paymentType) {
     const params = new URLSearchParams({
@@ -35,7 +36,7 @@ const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
         nameDelegation={searchParams?.nameDelegation || ''}
         windowType={searchParams?.windowType || ''}
         windowSize={searchParams?.windowSize || ''}
-        paymentType={searchParams?.paymentType || ''}
+        paymentType={searchParams?.paymentType || PAYMENT_OPTIONS[0].id}
       />
     </div>
   )
