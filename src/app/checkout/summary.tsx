@@ -80,6 +80,10 @@ const Summary: FC<SummaryProps> = ({
               <strong className="lowercase first-letter:capitalize">Total:</strong>
               {priceDisplay}
             </p>
+            <p className="text-xs font-light text-gray-400">
+              El precio total varia dependiendo de la opción de pago y cuotas que elijas. Para ver los precios y plazos,
+              puedes hacerlo dentro de la pasarela de pago de Mercado Pago.
+            </p>
             <Link href={`/checkout?${params.toString()}`}>
               <Button
                 disabled={canUserDoBuy}

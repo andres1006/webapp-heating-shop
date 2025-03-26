@@ -5,7 +5,7 @@ export async function POST(request: Request) {
     try {
         const { email } = await request.json()
 
-        
+
 
         if (!email) {
             return NextResponse.json(
@@ -24,14 +24,14 @@ export async function POST(request: Request) {
             .single()
 
         if (error && error.code !== 'PGRST116') {
-            
+
             return NextResponse.json(
                 { error: 'Error al buscar usuario' },
                 { status: 500 }
             )
         }
 
-        
+
 
         // Si el usuario existe, devolver sus datos
         if (data) {
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
             exists: false
         })
     } catch (error) {
-        
+
         return NextResponse.json(
             { error: 'Error interno del servidor' },
             { status: 500 }
