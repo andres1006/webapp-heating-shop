@@ -37,10 +37,6 @@ export async function POST(request: NextRequest) {
         // Obtener los datos de la notificación
         const body = await request.json()
 
-        console.log('body', body)
-
-        console.log('Notificación recibida de Mercado Pago:', body)
-
         try {
             await fetch(`https://hook.us2.make.com/wojnq7c86bhbwo576gvz7g0fjf31v5ze`, {
                 method: 'POST',

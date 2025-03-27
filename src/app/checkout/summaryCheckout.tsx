@@ -158,7 +158,6 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
         return
       }
 
-      console.log('userData onSubmit', userData)
       // Actualizar información del usuario en la tabla User
       const { error: userUpdateError } = await updateUser({
         user_id: userData?.user_id || '',
@@ -173,10 +172,9 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
         nameDelegation: nameDelegation
       })
 
-      console.log('userUpdateError', userUpdateError)
       if (userUpdateError) {
         toast.error(
-          'No se pudo actualizar la información del usuario. Por favor, intenta nuevamente.' + userUpdateError
+          'No se pudo actualizar la información del usuario. Por favor, intenta nuevamente.' + userUpdateError?.details
         )
         setIsLoading(false)
         return
@@ -211,8 +209,6 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
           },
           body: JSON.stringify(productData)
         })
-
-        console.log('response', response)
 
         if (!response.ok) {
           const errorData = await response.json()
@@ -269,7 +265,6 @@ export default function StepsPage({ nameDelegation, windowType, windowSize, paym
 
       const responseData = await response.json()
 
-      console.log('responseData', responseData)
       if (responseData.exists && responseData.user) {
         // El usuario existe, guardar en cookies y actualizar estado
         setCookie('userEmail', data.email, 7)

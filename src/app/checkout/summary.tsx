@@ -69,6 +69,10 @@ const Summary: FC<SummaryProps> = ({
 
         <div className="flex flex-col items-center mt-5">
           <p className="text-2xl font-semibold">Desde: $699</p>
+          <p className="text-xs font-light text-gray-400">
+            El precio total varia dependiendo de la opción de pago y cuotas que elijas. Para ver los precios y plazos,
+            puedes hacerlo dentro de la pasarela de pago de Mercado Pago.
+          </p>
           {/*  <p className="text-lg font-medium text-gray-700">Total: {formatPrice(price)}</p> */}
         </div>
       </div>

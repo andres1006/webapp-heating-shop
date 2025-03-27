@@ -37,10 +37,6 @@ export async function POST(request: NextRequest) {
     // Obtener los datos de la notificación
     const body = await request.json()
 
-    console.log('body', body)
-
-    console.log('Notificación recibida de Mercado Pago:', body)
-
     // Verificar que sea una notificación de pago
     if (body.type !== 'payment') {
       console.log('Notificación ignorada: no es de tipo payment')

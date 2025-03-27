@@ -63,6 +63,7 @@ export async function POST(req: Request) {
       .eq('email', userEmail)
       .single()
 
+
     if (userError || !userData) {
       return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 })
     }
