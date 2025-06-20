@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 
 // Definición del sitemap para mejorar la indexación en motores de búsqueda
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://www.freddo.mx'
+    const baseUrl = 'https://www.freddoair.com'
 
     // Fecha actual para lastModified
     const currentDate = new Date()

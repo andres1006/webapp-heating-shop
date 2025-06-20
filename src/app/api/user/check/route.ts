@@ -22,6 +22,7 @@ export async function POST(request: Request) {
             .select('*')
             .eq('email', email)
             .single()
+        
 
         if (error && error.code !== 'PGRST116') {
 

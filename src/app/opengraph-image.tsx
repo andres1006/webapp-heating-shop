@@ -35,7 +35,7 @@ export default async function Image() {
           }}
         >
           <img
-            src="https://www.freddo.mx/assets/logo.png"
+            src="https://www.freddoair.com/assets/logo.png"
             alt="Freddo Logo"
             width={200}
             height={200}

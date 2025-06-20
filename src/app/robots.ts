@@ -13,7 +13,7 @@ export default function robots(): MetadataRoute.Robots {
                 '/*.json$',
             ],
         },
-        sitemap: 'https://www.freddo.mx/sitemap.xml',
-        host: 'https://www.freddo.mx',
+        sitemap: 'https://www.freddoair.com/sitemap.xml',
+        host: 'https://www.freddoair.com',
     }
 } 

@@ -10,8 +10,8 @@ export default function HomePage() {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     name: 'Freddo - Instalación de Aire Acondicionado',
-    image: 'https://www.freddo.mx/assets/logo.png',
-    url: 'https://www.freddo.mx',
+    image: 'https://www.freddoair.com/assets/logo.png',
+    url: 'https://www.freddoair.com',
     telephone: '+52-55-1234-5678',
     address: {
       '@type': 'PostalAddress',
@@ -56,7 +56,7 @@ export default function HomePage() {
       price: '11999',
       availability: 'https://schema.org/InStock',
       validFrom: '2023-01-01',
-      url: 'https://www.freddo.mx/configurador'
+      url: 'https://freddoair.com/configurador'
     }
   }
 

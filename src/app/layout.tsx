@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import SidebarWrapper from '@/components/SidebarWrapper'
 import { Toaster } from 'react-hot-toast'
+import Script from 'next/script'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -21,7 +22,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.freddo.mx'),
+  metadataBase: new URL('https://www.freddoair.com'),
   title: {
     template: '%s | Freddo - Instalación de Aire Acondicionado',
     default: 'Freddo - Instalación de Aire Acondicionado en México'
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
   description:
     'Servicio profesional de instalación de aire acondicionado en México. Soluciones de climatización para hogares y oficinas.',
   applicationName: 'Freddo',
-  authors: [{ name: 'Freddo', url: 'https://www.freddo.mx' }],
+  authors: [{ name: 'Freddo', url: 'https://www.freddoair.com' }],
   generator: 'Next.js',
   keywords: ['aire acondicionado', 'instalación', 'climatización', 'México', 'confort térmico'],
   referrer: 'origin-when-cross-origin',
@@ -56,6 +57,16 @@ export default function RootLayout({
     <html lang="es" className={inter.variable}>
       <head>
         <link rel="preload" as="image" href="/assets/logo-horizontal.png" />
+        {/* Google Ads Tag (gtag.js) */}
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=AW-17239984843" strategy="afterInteractive" />
+        <Script id="google-ads" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-17239984843');
+          `}
+        </Script>
       </head>
       <body className={inter.className}>
         <SidebarWrapper>{children}</SidebarWrapper>
